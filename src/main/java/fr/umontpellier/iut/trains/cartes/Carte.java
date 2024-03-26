@@ -4,6 +4,9 @@ import fr.umontpellier.iut.trains.Joueur;
 
 public abstract class Carte {
     private final String nom;
+    private final int cout;
+    private final int valeur;
+
 
     /**
      * Constructeur simple
@@ -17,13 +20,22 @@ public abstract class Carte {
      * 
      * @param nom
      */
-    public Carte(String nom) {
+    public Carte(String nom, int cout, int valeur) {
         this.nom = nom;
+        this.cout = cout;
+        this.valeur = valeur;
     }
 
     public String getNom() {
         return nom;
-    }    
+    }
+    public int getCout() {
+        return cout;
+    }
+    public int getValeur() {
+        return valeur;
+    }
+
 
     /**
      * Cette fonction est exécutée lorsqu'un joueur joue la carte pendant son tour.
@@ -36,6 +48,6 @@ public abstract class Carte {
 
     @Override
     public String toString() {
-        return nom;
+        return "[nom : "+nom + "; valeur : " + valeur+"; cout : "+ cout+"]";
     }
 }
