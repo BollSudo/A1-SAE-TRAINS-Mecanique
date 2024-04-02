@@ -128,7 +128,17 @@ public class Joueur {
      */
     public Carte piocher() {
         // À FAIRE
-        return null;
+        if (pioche.isEmpty() && defausse.isEmpty()) {
+            return null;
+        }
+        if (pioche.isEmpty()) {
+            defausse.melanger();
+            pioche.addAll(defausse);
+            defausse.clear();
+        }
+        Carte cartePiochee = pioche.get(0);
+        pioche.remove(0);
+        return cartePiochee;
     }
 
     /**
@@ -146,7 +156,16 @@ public class Joueur {
      */
     public List<Carte> piocher(int n) {
         // À FAIRE
-        return null;
+        List<Carte> cartesPiochees = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            Carte cartePiochee = piocher();
+            if (cartePiochee==null){
+                break;
+            }
+            cartesPiochees.add(cartePiochee);
+        }
+
+        return cartesPiochees;
     }
 
     /**
