@@ -356,4 +356,13 @@ public class Joueur {
                 Map.entry("pioche", pioche.dataMap()),
                 Map.entry("actif", jeu.getJoueurCourant() == this));
     }
+
+    // FONCTIONS AJOUTEES
+    //**************************************************************************************/
+    /*                             A NETOYER AVANT DE RENDRE                              */
+    //**************************************************************************************/
+
+    public ListeDeCartes getMain() {
+        return main;
+    }
 }

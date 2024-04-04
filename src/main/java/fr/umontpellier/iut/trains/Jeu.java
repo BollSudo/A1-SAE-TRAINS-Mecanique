@@ -212,6 +212,10 @@ public class Jeu implements Runnable {
      */
     public boolean estFini() {
         // À FAIRE: réécrire cette méthode
+        //FIN DE PARTIE
+        //4 piles de cartes de la réserve vide sauf ferrailles
+        //Un des joueurs à utiliser tous ses jetons rails
+        //Tous les jetons gares placés sur plateau
         return false;
     }
 
@@ -310,4 +314,39 @@ public class Jeu implements Runnable {
                 Map.entry("log", log),
                 Map.entry("reserve", listeReserve));
     }
+
+
+
+    // FONCTIONS AJOUTEES
+    //**************************************************************************************/
+    /*                             A NETOYER AVANT DE RENDRE                              */
+    //**************************************************************************************/
+
+    /**
+     * Action (récursif) : retire toutes les cartes férrailles de la main du joueurCourant qui joue son tour et veut réaliser l'action spéciale et les placent dans la pile Ferraille.
+     */
+    public void removeAllFerrailleDepuisMainRecursif(int value){
+        if (value > 0) {
+            Carte feraille = joueurCourant.getMain().getCarte("Ferraille");
+            if (feraille != null){
+                feraille = joueurCourant.getMain().retirer("Ferraille");
+                reserve.get("Ferraille").add(feraille);
+                removeAllFerrailleDepuisMainRecursif(1);
+            }
+        }
+    }
+
+
+    /**
+     * Action : retire toutes les cartes férrailles de la main du joueurCourant qui joue son tour et veut réaliser l'action spéciale et les placent dans la pile Ferraille.
+     */
+    public void removeAllFerrailleDepuisMain() {
+        ListeDeCartes main = joueurCourant.getMain();
+        int count = main.count("Ferraille");
+        for (int i = 0; i < count ; i++) {
+            reserve.get("Ferraille").add(main.retirer("Ferraille"));
+        }
+    }
+
+
 }
