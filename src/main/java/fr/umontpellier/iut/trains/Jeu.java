@@ -193,6 +193,10 @@ public class Jeu implements Runnable {
         // initialisation (chaque joueur choisit une position de départ)
         // À FAIRE: compléter la partie initialisation
 
+        for (Joueur joueur : joueurs) {
+            joueur.choisirTuileDeDepart();
+        }
+
         // tours des joueurs jusqu'à une condition de fin
         while (!estFini()) {
             joueurCourant.jouerTour();

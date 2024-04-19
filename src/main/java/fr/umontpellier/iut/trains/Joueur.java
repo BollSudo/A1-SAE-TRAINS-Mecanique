@@ -10,6 +10,10 @@ import java.util.StringJoiner;
 import fr.umontpellier.iut.trains.cartes.Carte;
 import fr.umontpellier.iut.trains.cartes.FabriqueListeDeCartes;
 import fr.umontpellier.iut.trains.cartes.ListeDeCartes;
+import fr.umontpellier.iut.trains.plateau.Plateau;
+import fr.umontpellier.iut.trains.plateau.Tuile;
+import fr.umontpellier.iut.trains.plateau.TuileEtoile;
+import fr.umontpellier.iut.trains.plateau.TuileMer;
 
 public class Joueur {
     /**
@@ -127,7 +131,7 @@ public class Joueur {
      * @return la carte piochée ou {@code null} si aucune carte disponible
      */
     public Carte piocher() {
-        // À FAIRE
+        // À FAIRE - DONE
         if (pioche.isEmpty() && defausse.isEmpty()) {
             return null;
         }
@@ -155,7 +159,7 @@ public class Joueur {
      *         défausse)
      */
     public List<Carte> piocher(int n) {
-        // À FAIRE
+        // À FAIRE - DONE
         List<Carte> cartesPiochees = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             Carte cartePiochee = piocher();
@@ -204,7 +208,7 @@ public class Joueur {
     public void jouerTour() {
         // Initialisation
         jeu.log("<div class=\"tour\">Tour de " + toLog() + "</div>");
-        // À FAIRE: compléter l'initialisation du tour si nécessaire (mais possiblement
+        // À FAIRE - DONE : compléter l'initialisation du tour si nécessaire (mais possiblement
         // rien de spécial à faire)
 
         boolean finTour = false;
@@ -212,7 +216,7 @@ public class Joueur {
         // Boucle principale
         while (!finTour) {
             List<String> choixPossibles = new ArrayList<>();
-            // À FAIRE: préparer la liste des choix possibles
+            // À FAIRE - DONE: préparer la liste des choix possibles
             for (Carte c: main) {
                 // ajoute les noms de toutes les cartes en main à choixPossibles
                 choixPossibles.add(c.getNom());
@@ -246,6 +250,7 @@ public class Joueur {
             //CAS 4 : JOUER
                 // - Jouer des cartes de sa main (no order and no limit)
                 // Rq : certaines cartes ne sont pas jouables - A FAIRE
+                // si Pose de Rails alors doit placer un jeton rail sur le plateau en respectant les règles
 
             //CAS 1
             if (choix.startsWith("ACHAT:")) {
@@ -279,6 +284,25 @@ public class Joueur {
                 log("Joue " + carte); // affichage dans le log
                 cartesEnJeu.add(carte); // mettre la carte en jeu
                 carte.jouer(this);  // exécuter l'action de la carte
+
+                if (choix.equals("Pose de rails")) {
+                    List<String> choixTuilesPossibles = new ArrayList<>();
+                    List<Tuile> tuiles = jeu.getTuiles();
+                    for (Tuile tuile: tuiles) {
+                        // A FAIRE
+                        // Filtrer toutes les tuiles voisines jouables du joueur
+                        if (tuile.hasRail(this)) {
+                            for (Tuile voisine : tuile.getVoisines()) {
+                                if (!(voisine instanceof TuileMer)) { //verfier que voisine n'est pas une tuile mer
+                                    // verifier si assez d'argent pour pose de rail - A FAIRE
+                                    choixTuilesPossibles.add("TUILE:"+tuiles.indexOf(voisine));
+                                }
+                            }
+                        }
+                    }
+                    String choixTuile = choisir(String.format("Tour de %s", this.nom), choixTuilesPossibles, null, false);
+                    placerJetonRail(choixTuile);
+                }
             }
 
             //fin de la premiere action
@@ -464,6 +488,39 @@ public class Joueur {
                 jeu.getReserve().get("Ferraille").add(ferraille);
                 removeAllFerrailleDepuisMainRecursif(1);
             }
+        }
+    }
+
+
+    /**
+     * Action : Place un jeton Rails sur une casse possible pour l'initialisation du jeu (c-à-d pas de TuileMer ni
+     * TuileEtoile ni Tuile deja choisi par un autre Joueur)
+     */
+    public void choisirTuileDeDepart() {
+        jeu.log("<div class=\"tour\">Départ de " + toLog() + "</div>");
+        List<String> choixPossibles = new ArrayList<>();
+        List<Tuile> tuiles = jeu.getTuiles();
+
+        // Filtrer les tuiles possibles de départ
+        for (Tuile tuile : tuiles) {
+            if (!(tuile instanceof TuileMer) && !(tuile instanceof TuileEtoile) && (tuile.estVide())) {
+                choixPossibles.add("TUILE:"+tuiles.indexOf(tuile));
+            }
+        }
+
+        // Choix de l'action à réaliser (no skip)
+        String choix = choisir(String.format("Tour de %s", this.nom), choixPossibles, null, false);
+
+        // Placer jeton Rails sur la tuile choisie par le joueur
+        placerJetonRail(choix);
+    }
+
+    private void placerJetonRail(String choix) {
+        if (choix.startsWith("TUILE:")) {
+            int indexTuile = Integer.parseInt(choix.split(":")[1]);
+            jeu.getTuile(indexTuile).ajouterRail(this);
+            nbJetonsRails--;
+            log("A placé un jeton Rails à "+ Plateau.getCoordonnees(indexTuile));
         }
     }
 

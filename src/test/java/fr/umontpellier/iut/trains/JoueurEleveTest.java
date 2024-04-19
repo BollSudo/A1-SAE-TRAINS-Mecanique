@@ -1,6 +1,8 @@
 package fr.umontpellier.iut.trains;
 
 import fr.umontpellier.iut.trains.cartes.*;
+import fr.umontpellier.iut.trains.plateau.TuileTerrain;
+import fr.umontpellier.iut.trains.plateau.TuileVille;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -9,6 +11,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class JoueurEleveTest extends BaseTestClass {
 
@@ -138,6 +141,71 @@ public class JoueurEleveTest extends BaseTestClass {
         assertEquals(0, main.size());
         assertTrue(containsReferences(main));
         assertTrue(containsReferences(jeu.getReserve().get("Ferraille"), ferraille1, ferraille2, ferraille3, ferraille4, ferraille5));
+    }
+
+    // @Disabled
+    @Test
+    void test_choisirTuileDeDepart() {
+        jeu.setInput("TUILE:1");
+        joueur.choisirTuileDeDepart();
+
+        assertTrue(jeu.getTuile(1).hasRail(joueur));
+        assertFalse(jeu.getTuile(1).hasRail(joueurs.get(0)));
+        assertTrue((jeu.getTuile(1) instanceof TuileTerrain) || (jeu.getTuile(1) instanceof TuileVille));
+        assertEquals(19, getNbJetonsRails(joueur));
+        checkPlateau(null, List.of(1), null);
+    }
+
+    // @Disabled
+    @Test
+    void test_ajouter_rail_ne_peut_ajouter_une_seule_rail_par_action_carte_pose() {
+        setupJeu();
+        initialisation();
+        tuiles.get(1).ajouterRail(joueur);
+
+        Carte pose = new PoseDeRails();
+        addAll(main, pose);
+
+        jouerTourPartiel("Pose de rails", "TUILE:2", "TUILE:3");
+
+        assertTrue(containsReferences(main));
+        assertTrue(containsReferences(cartesEnJeu, pose));
+        checkPlateau(null, List.of(1, 2), null);
+    }
+
+    // @Disabled
+    @Test
+    void test_ajouter_rail_obliger_de_placer_rail_si_joue_carte_pose() {
+        setupJeu();
+        initialisation();
+        tuiles.get(1).ajouterRail(joueur);
+
+        Carte pose = new PoseDeRails();
+        Carte omni = new TrainOmnibus();
+        addAll(main, pose, omni);
+
+        jouerTourPartiel("Pose de rails", "Train omnibus");
+
+        assertTrue(containsReferences(main, omni));
+        assertTrue(containsReferences(cartesEnJeu, pose));
+        checkPlateau(null, List.of(1), null);
+    }
+
+    // @Disabled
+    @Test
+    void test_ajouter_rail_uniquement_sur_les_tuiles_voisines() {
+        setupJeu();
+        initialisation();
+        tuiles.get(1).ajouterRail(joueur);
+
+        Carte pose = new PoseDeRails();
+        addAll(main, pose);
+
+        jouerTourPartiel("Pose de rails", "TUILE:3");
+
+        assertTrue(containsReferences(main));
+        assertTrue(containsReferences(cartesEnJeu, pose));
+        checkPlateau(null, List.of(1), null);
     }
 
 }

@@ -103,4 +103,13 @@ public abstract class Tuile {
         }
         return map;
     }
+
+    // FONCTIONS AJOUTEES
+    //**************************************************************************************/
+    /*                             A NETOYER AVANT DE RENDRE                              */
+    //**************************************************************************************/
+
+    public ArrayList<Tuile> getVoisines() {
+        return voisines;
+    }
 }
