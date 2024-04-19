@@ -208,18 +208,96 @@ public class Joueur {
         // rien de spécial à faire)
 
         boolean finTour = false;
+        boolean premiereAction = true;
         // Boucle principale
         while (!finTour) {
             List<String> choixPossibles = new ArrayList<>();
             // À FAIRE: préparer la liste des choix possibles
+            for (Carte c: main) {
+                // ajoute les noms de toutes les cartes en main à choixPossibles
+                choixPossibles.add(c.getNom());
+            }
+            for (String nomCarte: jeu.getReserve().keySet()) {
+                // ajoute les noms des cartes dans la réserve préfixés de "ACHAT:" à choixPossibles
+                choixPossibles.add("ACHAT:" + nomCarte);
+            }
+            if (premiereAction) {
+                choixPossibles.add("SPECIAL"); // action spéciale possible si passe son tour
+            }
 
             // Choix de l'action à réaliser
             String choix = choisir(String.format("Tour de %s", this.nom), choixPossibles, null, true);
 
             // À FAIRE: exécuter l'action demandée par le joueur
+
+            //CAS 1 : ACHETER
+                // - Acheter des cartes de la réserve (no order and no limit)
+                        // Rq : il faut filtrer les cartes qui sont achetables - A FAIRE
+
+                //  Attention : chaque action se fait successivement (pas deux en meme temps)
+                // rq : pas obligé de dépenser tout l'argent généré, ni de jouer toutes ses cartes
+
+            //CAS 2 : TERMINER LE TOUR ("")
+                // - Rien faire
+
+            //CAS 3 : PASSER SON TOUR + ("SPECIAL") - Valable que si n'a pas fait d'autres actions avant
+                // - Action spéciale : remettre toutes Ferrailles de sa main dans pile Ferraille de reserve
+
+            //CAS 4 : JOUER
+                // - Jouer des cartes de sa main (no order and no limit)
+                // Rq : certaines cartes ne sont pas jouables - A FAIRE
+
+            //CAS 1
+            if (choix.startsWith("ACHAT:")) {
+                // prendre une carte dans la réserve
+                String nomCarte = choix.split(":")[1];
+                Carte carte = jeu.prendreDansLaReserve(nomCarte);
+                if (carte != null) {
+                    log("Reçoit " + carte); // affichage dans le log
+                    cartesRecues.add(carte);
+                }
+            }
+
+            //CAS 2
+            else if (choix.equals("")) {
+                // terminer le tour
+                finTour = true;
+            }
+
+            //CAS 3
+            else if (choix.equals("SPECIAL")) {
+                // passe son tour avec action spéciale - A FAIRE - DONE
+                int nbFerraillesDeplacees = removeAllFerrailleDepuisMain();
+                log("Réalise l'action spéciale : "+nbFerraillesDeplacees+" Ferraille déposé(s) dans la réserve");
+                finTour = true;
+            }
+
+            //CAS 4
+            else {
+                // jouer une carte de la main
+                Carte carte = main.retirer(choix);
+                log("Joue " + carte); // affichage dans le log
+                cartesEnJeu.add(carte); // mettre la carte en jeu
+                carte.jouer(this);  // exécuter l'action de la carte
+            }
+
+            //fin de la premiere action
+            premiereAction = false;
         }
+
+
         // Finalisation
-        // À FAIRE: compléter la finalisation du tour
+        // À FAIRE: compléter la finalisation du tour (phase d'ajustement)
+
+        // défausser toutes les cartes
+        defausse.addAll(main);
+        main.clear();
+        defausse.addAll(cartesRecues);
+        cartesRecues.clear();
+        defausse.addAll(cartesEnJeu);
+        cartesEnJeu.clear();
+
+        main.addAll(piocher(5)); // piocher 5 cartes en main
     }
 
     /**
@@ -362,7 +440,31 @@ public class Joueur {
     /*                             A NETOYER AVANT DE RENDRE                              */
     //**************************************************************************************/
 
-    public ListeDeCartes getMain() {
-        return main;
+
+    /**
+     * Action : retire toutes les cartes férrailles de la main du joueur et les placent dans la pile Ferraille de la réserve.
+     * @return le nombre de cartes Ferraille mis en réserve.
+     */
+    public int removeAllFerrailleDepuisMain() {
+        int count = main.count("Ferraille");
+        for (int i = 0; i < count ; i++) {
+            jeu.getReserve().get("Ferraille").add(main.retirer("Ferraille"));
+        }
+        return count;
     }
+
+    /**
+     * Action (récursif) : retire toutes les cartes férrailles de la main du joueur et les placent dans la pile Ferraille de la réserve.
+     */
+    public void removeAllFerrailleDepuisMainRecursif(int value){
+        if (value > 0) {
+            Carte ferraille = main.getCarte("Ferraille");
+            if (ferraille != null){
+                ferraille = main.retirer("Ferraille");
+                jeu.getReserve().get("Ferraille").add(ferraille);
+                removeAllFerrailleDepuisMainRecursif(1);
+            }
+        }
+    }
+
 }
