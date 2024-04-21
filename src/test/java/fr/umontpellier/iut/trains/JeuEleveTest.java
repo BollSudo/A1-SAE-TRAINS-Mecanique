@@ -18,5 +18,40 @@ public class JeuEleveTest extends BaseTestClass {
         initialisation();
     }
 
+    // @Disabled
+    @Test
+    void test_estFini_cas_jetons_rails() {
+        setAttribute(jeu.getJoueurCourant(), "nbJetonsRails", 0);
+        assertTrue(jeu.estFini());
+    }
+
+    // @Disabled
+    @Test
+    void test_estFini_cas_jetons_gares() {
+        setAttribute(jeu, "nbJetonsGare", 0);
+        assertTrue(jeu.estFini());
+    }
+
+    // @Disabled
+    @Test
+    void test_estFini_cas_4_piles_vides_sans_ferrailles() {
+        jeu.getReserve().get("Train express").clear();
+        jeu.getReserve().get("Pose de rails").clear();
+        jeu.getReserve().get("Appartement").clear();
+        jeu.getReserve().get("Gare").clear();
+
+        assertTrue(jeu.estFini());
+    }
+
+    // @Disabled
+    @Test
+    void test_estFini_cas_4_piles_vides_avec_ferrailles() {
+        jeu.getReserve().get("Train express").clear();
+        jeu.getReserve().get("Pose de rails").clear();
+        jeu.getReserve().get("Appartement").clear();
+        jeu.getReserve().get("Ferraille").clear();
+
+        assertFalse(jeu.estFini());
+    }
 }
 

@@ -191,7 +191,7 @@ public class Jeu implements Runnable {
      */
     public void run() {
         // initialisation (chaque joueur choisit une position de départ)
-        // À FAIRE: compléter la partie initialisation
+        // À FAIRE - DONE : compléter la partie initialisation
 
         for (Joueur joueur : joueurs) {
             joueur.choisirTuileDeDepart();
@@ -217,9 +217,24 @@ public class Jeu implements Runnable {
     public boolean estFini() {
         // À FAIRE: réécrire cette méthode
         //FIN DE PARTIE
-        //4 piles de cartes de la réserve vide sauf ferrailles
+
         //Un des joueurs à utiliser tous ses jetons rails
         //Tous les jetons gares placés sur plateau
+        if (joueurCourant.getNbJetonsRails() == 0 || nbJetonsGare == 0) {
+            return true;
+        }
+
+        //4 piles de cartes de la réserve vide sauf ferrailles
+        int nbPileVide = 0;
+        for (Map.Entry<String, ListeDeCartes> entry : reserve.entrySet()) {
+            if ((!(entry.getKey().equals("Ferraille"))) && (entry.getValue().isEmpty())) {
+                nbPileVide++;
+            }
+            if (nbPileVide >= 4) {
+                return true;
+            }
+        }
+
         return false;
     }
 

@@ -158,54 +158,59 @@ public class JoueurEleveTest extends BaseTestClass {
 
     // @Disabled
     @Test
-    void test_ajouter_rail_ne_peut_ajouter_une_seule_rail_par_action_carte_pose() {
-        setupJeu();
-        initialisation();
+    void test_ajouter_rail_ne_peut_ajouter_une_seule_rail_par_point_rail() {
         tuiles.get(1).ajouterRail(joueur);
+        setAttribute(joueur, "pointsRails", 2);
 
-        Carte pose = new PoseDeRails();
-        addAll(main, pose);
+        jouerTourPartiel("TUILE:2", "TUILE:3", "TUILE:4");
 
-        jouerTourPartiel("Pose de rails", "TUILE:2", "TUILE:3");
-
-        assertTrue(containsReferences(main));
-        assertTrue(containsReferences(cartesEnJeu, pose));
-        checkPlateau(null, List.of(1, 2), null);
+        assertEquals(0, getPointsRails(joueur));
+        assertEquals(18, getNbJetonsRails(joueur));
+        checkPlateau(null, List.of(1, 2, 3), null);
     }
 
     // @Disabled
     @Test
-    void test_ajouter_rail_obliger_de_placer_rail_si_joue_carte_pose() {
-        setupJeu();
-        initialisation();
+    void test_ajouter_rail_pas_obliger_de_placer_rail_si_a_point_rail_et_reset_fin_de_tour() {
         tuiles.get(1).ajouterRail(joueur);
+        setAttribute(joueur, "pointsRails", 5);
 
-        Carte pose = new PoseDeRails();
-        Carte omni = new TrainOmnibus();
-        addAll(main, pose, omni);
+        jeu.setInput("");
+        joueur.jouerTour();
 
-        jouerTourPartiel("Pose de rails", "Train omnibus");
-
-        assertTrue(containsReferences(main, omni));
-        assertTrue(containsReferences(cartesEnJeu, pose));
+        assertEquals(0, getPointsRails(joueur));
+        assertEquals(20, getNbJetonsRails(joueur));
         checkPlateau(null, List.of(1), null);
     }
 
     // @Disabled
     @Test
     void test_ajouter_rail_uniquement_sur_les_tuiles_voisines() {
-        setupJeu();
-        initialisation();
         tuiles.get(1).ajouterRail(joueur);
+        setAttribute(joueur, "pointsRails", 5);
 
-        Carte pose = new PoseDeRails();
-        addAll(main, pose);
+        jouerTourPartiel("TUILE:2", "TUILE:4");
 
-        jouerTourPartiel("Pose de rails", "TUILE:3");
+        assertEquals(4, getPointsRails(joueur));
+        assertEquals(19, getNbJetonsRails(joueur));
+        checkPlateau(null, List.of(1, 2), null);
+    }
 
+    @Disabled
+    @Test
+    void test_jouerTour_poseDeRail_pas_dispo_si_plus_assez_de_jetons() {
+        tuiles.get(1).ajouterRail(joueur);
+        setAttribute(joueur, "nbJetonsRails", 1);
+        Carte pose1 = new PoseDeRails();
+        Carte pose2 = new PoseDeRails();
+        addAll(main, pose1, pose2);
+
+        jouerTourPartiel("Pose de rails", "TUILE:2", "Pose de rails", "TUILE:3");
+
+        assertEquals(0, joueur.getNbJetonsRails());
         assertTrue(containsReferences(main));
-        assertTrue(containsReferences(cartesEnJeu, pose));
-        checkPlateau(null, List.of(1), null);
+        assertTrue(containsReferences(cartesEnJeu, pose1, pose2));
+        checkPlateau(null, List.of(1,2), null);
     }
 
 }

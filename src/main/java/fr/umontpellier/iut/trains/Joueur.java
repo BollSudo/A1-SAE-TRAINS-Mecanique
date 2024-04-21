@@ -10,6 +10,7 @@ import java.util.StringJoiner;
 import fr.umontpellier.iut.trains.cartes.Carte;
 import fr.umontpellier.iut.trains.cartes.FabriqueListeDeCartes;
 import fr.umontpellier.iut.trains.cartes.ListeDeCartes;
+import fr.umontpellier.iut.trains.cartes.PoseDeRails;
 import fr.umontpellier.iut.trains.plateau.Plateau;
 import fr.umontpellier.iut.trains.plateau.Tuile;
 import fr.umontpellier.iut.trains.plateau.TuileEtoile;
@@ -30,7 +31,7 @@ public class Joueur {
     private int argent;
     /**
      * Nombre de points rails dont le joueur dispose. Ces points sont obtenus en
-     * jouant les cartes RAIL (vertes) et remis à zéro entre les tous
+     * jouant les cartes RAIL (vertes) et remis à zéro entre les tours
      */
     private int pointsRails;
     /**
@@ -228,6 +229,21 @@ public class Joueur {
             if (premiereAction) {
                 choixPossibles.add("SPECIAL"); // action spéciale possible si passe son tour
             }
+            if (pointsRails > 0) {
+                List<Tuile> tuiles = jeu.getTuiles();
+                for (Tuile tuile: tuiles) {
+                    // A FAIRE
+                    // Filtrer toutes les tuiles voisines jouables du joueur
+                    if (tuile.hasRail(this)) {
+                        for (Tuile voisine : tuile.getVoisines()) {
+                            if (!(voisine instanceof TuileMer)) { //verfier que voisine n'est pas une tuile mer
+                                // verifier si assez d'argent pour pose de rail - A FAIRE
+                                choixPossibles.add("TUILE:"+tuiles.indexOf(voisine));
+                            }
+                        }
+                    }
+                }
+            }
 
             // Choix de l'action à réaliser
             String choix = choisir(String.format("Tour de %s", this.nom), choixPossibles, null, true);
@@ -247,7 +263,9 @@ public class Joueur {
             //CAS 3 : PASSER SON TOUR + ("SPECIAL") - Valable que si n'a pas fait d'autres actions avant
                 // - Action spéciale : remettre toutes Ferrailles de sa main dans pile Ferraille de reserve
 
-            //CAS 4 : JOUER
+            //CAS 4 : POSER UN RAIL ("TUILE")
+
+            //CAS 5 : JOUER
                 // - Jouer des cartes de sa main (no order and no limit)
                 // Rq : certaines cartes ne sont pas jouables - A FAIRE
                 // si Pose de Rails alors doit placer un jeton rail sur le plateau en respectant les règles
@@ -278,32 +296,23 @@ public class Joueur {
             }
 
             //CAS 4
+
+            else if (choix.startsWith("TUILE:")) {
+                placerJetonRail(choix);
+                pointsRails--;
+            }
+
+            //CAS 5
             else {
                 // jouer une carte de la main
                 Carte carte = main.retirer(choix);
                 log("Joue " + carte); // affichage dans le log
                 cartesEnJeu.add(carte); // mettre la carte en jeu
                 carte.jouer(this);  // exécuter l'action de la carte
-
-                if (choix.equals("Pose de rails")) {
-                    List<String> choixTuilesPossibles = new ArrayList<>();
-                    List<Tuile> tuiles = jeu.getTuiles();
-                    for (Tuile tuile: tuiles) {
-                        // A FAIRE
-                        // Filtrer toutes les tuiles voisines jouables du joueur
-                        if (tuile.hasRail(this)) {
-                            for (Tuile voisine : tuile.getVoisines()) {
-                                if (!(voisine instanceof TuileMer)) { //verfier que voisine n'est pas une tuile mer
-                                    // verifier si assez d'argent pour pose de rail - A FAIRE
-                                    choixTuilesPossibles.add("TUILE:"+tuiles.indexOf(voisine));
-                                }
-                            }
-                        }
-                    }
-                    String choixTuile = choisir(String.format("Tour de %s", this.nom), choixTuilesPossibles, null, false);
-                    placerJetonRail(choixTuile);
-                }
             }
+
+            // if carte.detyperail
+            // if carte.effetapllicable
 
             //fin de la premiere action
             premiereAction = false;
@@ -322,6 +331,9 @@ public class Joueur {
         cartesEnJeu.clear();
 
         main.addAll(piocher(5)); // piocher 5 cartes en main
+        //reset
+        argent = 0;
+        pointsRails = 0;
     }
 
     /**
@@ -516,12 +528,14 @@ public class Joueur {
     }
 
     private void placerJetonRail(String choix) {
-        if (choix.startsWith("TUILE:")) {
             int indexTuile = Integer.parseInt(choix.split(":")[1]);
             jeu.getTuile(indexTuile).ajouterRail(this);
             nbJetonsRails--;
             log("A placé un jeton Rails à "+ Plateau.getCoordonnees(indexTuile));
-        }
+    }
+
+    public int getNbJetonsRails() {
+        return nbJetonsRails;
     }
 
 }
