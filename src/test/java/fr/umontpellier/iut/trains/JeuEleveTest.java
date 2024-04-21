@@ -39,10 +39,10 @@ public class JeuEleveTest extends BaseTestClass {
     // @Disabled
     @Test
     void test_estFini_cas_4_piles_vides_sans_ferrailles() {
-        jeu.getReserve().get("Train express").clear();
-        jeu.getReserve().get("Pose de rails").clear();
-        jeu.getReserve().get("Appartement").clear();
-        jeu.getReserve().get("Gare").clear();
+        reserve.get("Train express").clear();
+        reserve.get("Pose de rails").clear();
+        reserve.get("Appartement").clear();
+        reserve.get("Gare").clear();
 
         assertTrue(jeu.estFini());
     }
@@ -50,10 +50,10 @@ public class JeuEleveTest extends BaseTestClass {
     // @Disabled
     @Test
     void test_estFini_cas_4_piles_vides_avec_ferrailles() {
-        jeu.getReserve().get("Train express").clear();
-        jeu.getReserve().get("Pose de rails").clear();
-        jeu.getReserve().get("Appartement").clear();
-        jeu.getReserve().get("Ferraille").clear();
+        reserve.get("Train express").clear();
+        reserve.get("Pose de rails").clear();
+        reserve.get("Appartement").clear();
+        reserve.get("Ferraille").clear();
 
         assertFalse(jeu.estFini());
     }

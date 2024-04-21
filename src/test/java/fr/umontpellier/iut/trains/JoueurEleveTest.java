@@ -36,7 +36,7 @@ public class JoueurEleveTest extends BaseTestClass {
         Carte ferraille5 = new Gare();
         Carte fondPioche = new Ferraille();
 
-        jeu.getReserve().get("Ferraille").clear();
+        reserve.get("Ferraille").clear();
         addAll(main, ferraille1, ferraille2, omni3, omni4, omni5);
         addAll(pioche, gare1, gare2, gare3, gare4, ferraille5, fondPioche);
 
@@ -48,7 +48,7 @@ public class JoueurEleveTest extends BaseTestClass {
         assertTrue(containsReferences(defausse, omni3, omni4, omni5));
         assertTrue(containsReferences(cartesEnJeu));
         assertTrue(containsReferences(cartesRecues));
-        assertTrue(containsReferences(jeu.getReserve().get("Ferraille"), ferraille1, ferraille2));
+        assertTrue(containsReferences(reserve.get("Ferraille"), ferraille1, ferraille2));
         assertEquals(0, getArgent(joueur));
         assertEquals(0, getPointsRails(joueur));
     }
@@ -56,27 +56,25 @@ public class JoueurEleveTest extends BaseTestClass {
     //@Disabled
     @Test
     void test_removeAllFerrailleDepuisMainRecursif_aucune_ferraille_dans_main() {
-        main.clear();
-        jeu.getReserve().get("Ferraille").clear();
+        reserve.get("Ferraille").clear();
         joueur.removeAllFerrailleDepuisMainRecursif(1);
 
         assertEquals(0, main.size());
         assertTrue(containsReferences(main));
-        assertTrue(containsReferences(jeu.getReserve().get("Ferraille")));
+        assertTrue(containsReferences(reserve.get("Ferraille")));
     }
 
     //@Disabled
     @Test
     void test_removeAllFerrailleDepuisMainRecursif_une_ferraille_dans_main() {
         Carte ferraille = new Ferraille();
-        main.clear();
-        jeu.getReserve().get("Ferraille").clear();
+        reserve.get("Ferraille").clear();
         main.add(ferraille);
         joueur.removeAllFerrailleDepuisMainRecursif(1);
 
         assertEquals(0, main.size());
         assertTrue(containsReferences(main));
-        assertTrue(containsReferences(jeu.getReserve().get("Ferraille"), ferraille));
+        assertTrue(containsReferences(reserve.get("Ferraille"), ferraille));
     }
 
     //@Disabled
@@ -88,40 +86,37 @@ public class JoueurEleveTest extends BaseTestClass {
         Carte ferraille4 = new Ferraille();
         Carte ferraille5 = new Ferraille();
 
-        main.clear();
-        jeu.getReserve().get("Ferraille").clear();
+        reserve.get("Ferraille").clear();
         addAll(main, ferraille1, ferraille2, ferraille3, ferraille4, ferraille5);
         joueur.removeAllFerrailleDepuisMainRecursif(1);
 
         assertEquals(0, main.size());
         assertTrue(containsReferences(main));
-        assertTrue(containsReferences(jeu.getReserve().get("Ferraille"), ferraille1, ferraille2, ferraille3, ferraille4, ferraille5));
+        assertTrue(containsReferences(reserve.get("Ferraille"), ferraille1, ferraille2, ferraille3, ferraille4, ferraille5));
     }
 
     //@Disabled
     @Test
     void test_removeAllFerrailleDepuisMain_aucune_ferraille_dans_main() {
-        main.clear();
-        jeu.getReserve().get("Ferraille").clear();
+        reserve.get("Ferraille").clear();
         joueur.removeAllFerrailleDepuisMain();
 
         assertEquals(0, main.size());
         assertTrue(containsReferences(main));
-        assertTrue(containsReferences(jeu.getReserve().get("Ferraille")));
+        assertTrue(containsReferences(reserve.get("Ferraille")));
     }
 
     //@Disabled
     @Test
     void test_removeAllFerrailleDepuisMain_une_feraille_dans_main() {
         Carte ferraille = new Ferraille();
-        main.clear();
-        jeu.getReserve().get("Ferraille").clear();
+        reserve.get("Ferraille").clear();
         main.add(ferraille);
         joueur.removeAllFerrailleDepuisMain();
 
         assertEquals(0, main.size());
         assertTrue(containsReferences(main));
-        assertTrue(containsReferences(jeu.getReserve().get("Ferraille"), ferraille));
+        assertTrue(containsReferences(reserve.get("Ferraille"), ferraille));
     }
 
     //@Disabled
@@ -133,14 +128,13 @@ public class JoueurEleveTest extends BaseTestClass {
         Carte ferraille4 = new Ferraille();
         Carte ferraille5 = new Ferraille();
 
-        main.clear();
-        jeu.getReserve().get("Ferraille").clear();
+        reserve.get("Ferraille").clear();
         addAll(main, ferraille1, ferraille2, ferraille3, ferraille4, ferraille5);
         joueur.removeAllFerrailleDepuisMain();
 
         assertEquals(0, main.size());
         assertTrue(containsReferences(main));
-        assertTrue(containsReferences(jeu.getReserve().get("Ferraille"), ferraille1, ferraille2, ferraille3, ferraille4, ferraille5));
+        assertTrue(containsReferences(reserve.get("Ferraille"), ferraille1, ferraille2, ferraille3, ferraille4, ferraille5));
     }
 
     // @Disabled
@@ -198,6 +192,30 @@ public class JoueurEleveTest extends BaseTestClass {
         assertTrue(containsReferences(main));
         assertTrue(containsReferences(cartesEnJeu, pose1, pose2));
         checkPlateau(null, List.of(1,2), null);
+    }
+
+    // @Disabled
+    @Test
+    void test_recevoirUneFerraille_pile_non_vide() {
+        Carte f = new Ferraille();
+
+        reserve.get("Ferraille").clear();
+        reserve.get("Ferraille").add(f);
+        joueur.recevoirUneFerraille();
+
+        assertTrue(containsReferences(cartesRecues, f));
+        assertTrue(containsReferences(reserve.get("Ferraille")));
+    }
+
+    // @Disabled
+    @Test
+    void test_recevoirUneFerraille_pile_vide() {
+
+        reserve.get("Ferraille").clear();
+        joueur.recevoirUneFerraille();
+
+        assertTrue(containsReferences(cartesRecues));
+        assertTrue(containsReferences(reserve.get("Ferraille")));
     }
 
 }

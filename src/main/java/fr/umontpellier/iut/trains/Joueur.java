@@ -224,7 +224,10 @@ public class Joueur {
             }
             for (String nomCarte: jeu.getReserve().keySet()) {
                 // ajoute les noms des cartes dans la réserve préfixés de "ACHAT:" à choixPossibles
-                choixPossibles.add("ACHAT:" + nomCarte);
+                // A FAIRE : verifier que la pile n'est pas vide et que le joueur peut l'acheter
+                //if ((!jeu.getReserve().get(nomCarte).isEmpty()) && (jeu.getReserve().get(nomCarte).get(0).getCout() <= argent)) {
+                    choixPossibles.add("ACHAT:" + nomCarte);
+                //}
             }
             if (premiereAction) {
                 choixPossibles.add("SPECIAL"); // action spéciale possible si passe son tour
@@ -520,4 +523,17 @@ public class Joueur {
         return nbJetonsRails;
     }
 
+    public void incrementerPointsRails() {
+        pointsRails++;
+    }
+
+    /**
+     * Le joueur reçoit une carte Ferraille issue de la pile Ferraille de la reserve.
+     * Ne fait rien si la pile Ferraille est vide.
+     */
+    public void recevoirUneFerraille() {
+        if (!jeu.getReserve().get("Ferraille").isEmpty()) {
+            cartesRecues.add(jeu.prendreDansLaReserve("Ferraille"));
+        }
+    }
 }
