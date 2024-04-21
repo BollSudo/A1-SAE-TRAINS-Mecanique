@@ -13,4 +13,14 @@ public class TuileEtoile extends Tuile {
         super();
         this.valeur = valeur;
     }
+
+    // FONCTIONS AJOUTEES
+    //**************************************************************************************/
+    /*                             A NETOYER AVANT DE RENDRE                              */
+    //**************************************************************************************/
+
+    @Override
+    public int getPoint() {
+        return valeur;
+    }
 }

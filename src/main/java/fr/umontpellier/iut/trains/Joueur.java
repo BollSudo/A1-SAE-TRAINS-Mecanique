@@ -7,14 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
-import fr.umontpellier.iut.trains.cartes.Carte;
-import fr.umontpellier.iut.trains.cartes.FabriqueListeDeCartes;
-import fr.umontpellier.iut.trains.cartes.ListeDeCartes;
-import fr.umontpellier.iut.trains.cartes.PoseDeRails;
-import fr.umontpellier.iut.trains.plateau.Plateau;
-import fr.umontpellier.iut.trains.plateau.Tuile;
-import fr.umontpellier.iut.trains.plateau.TuileEtoile;
-import fr.umontpellier.iut.trains.plateau.TuileMer;
+import fr.umontpellier.iut.trains.cartes.*;
+import fr.umontpellier.iut.trains.plateau.*;
 
 public class Joueur {
     /**
@@ -119,7 +113,11 @@ public class Joueur {
      * @return le score total du joueur
      */
     public int getScoreTotal() {
-        // À FAIRE
+        int score = 0;
+        score += calculerScoreCartes(main);
+        score += calculerScoreCartes(pioche);
+        score += calculerScoreCartes(defausse);
+        score += calculerScoreRails();
         return 0;
     }
 
@@ -214,35 +212,34 @@ public class Joueur {
 
         boolean finTour = false;
         boolean premiereAction = true;
+        List<Tuile> tuilesRails = getTuilesRails();
         // Boucle principale
         while (!finTour) {
             List<String> choixPossibles = new ArrayList<>();
             // À FAIRE - DONE: préparer la liste des choix possibles
             for (Carte c: main) {
                 // ajoute les noms de toutes les cartes en main à choixPossibles
-                choixPossibles.add(c.getNom());
+                if (!c.getNom().equals("Ferraille")) {
+                    choixPossibles.add(c.getNom());
+                }
             }
             for (String nomCarte: jeu.getReserve().keySet()) {
                 // ajoute les noms des cartes dans la réserve préfixés de "ACHAT:" à choixPossibles
                 // A FAIRE : verifier que la pile n'est pas vide et que le joueur peut l'acheter
-                //if ((!jeu.getReserve().get(nomCarte).isEmpty()) && (jeu.getReserve().get(nomCarte).get(0).getCout() <= argent)) {
+                //if (!(nomCarte.equals("Ferraille")) || (!jeu.getReserve().get(nomCarte).isEmpty()) || (jeu.getReserve().get(nomCarte).get(0).getCout() <= argent)) {
                     choixPossibles.add("ACHAT:" + nomCarte);
                 //}
             }
             if (premiereAction) {
-                choixPossibles.add("SPECIAL"); // action spéciale possible si passe son tour
+                choixPossibles.add("Ferraille"); // action spéciale possible si passe son tour
             }
             if (pointsRails > 0) {
-                List<Tuile> tuiles = jeu.getTuiles();
-                for (Tuile tuile: tuiles) {
-                    // A FAIRE
-                    // Filtrer toutes les tuiles voisines jouables du joueur
-                    if (tuile.hasRail(this)) {
-                        for (Tuile voisine : tuile.getVoisines()) {
-                            if (!(voisine instanceof TuileMer)) { //verfier que voisine n'est pas une tuile mer
-                                // verifier si assez d'argent pour pose de rail - A FAIRE
-                                choixPossibles.add("TUILE:"+tuiles.indexOf(voisine));
-                            }
+                // Filtrer toutes les tuiles voisines jouables du joueur
+                for (Tuile tuileRails : tuilesRails) {
+                    for (Tuile voisine : tuileRails.getVoisines()) {
+                        if (!(voisine instanceof TuileMer) && !voisine.hasRail(this)) { //verfier que voisine n'est pas une tuile mer
+                            // verifier si assez d'argent pour pose de rail - A FAIRE
+                            choixPossibles.add("TUILE:"+jeu.getTuiles().indexOf(voisine));
                         }
                     }
                 }
@@ -291,7 +288,7 @@ public class Joueur {
             }
 
             //CAS 3
-            else if (choix.equals("SPECIAL")) {
+            else if (choix.equals("Ferraille")) {
                 // passe son tour avec action spéciale - A FAIRE - DONE
                 int nbFerraillesDeplacees = removeAllFerrailleDepuisMain();
                 log("Réalise l'action spéciale : "+nbFerraillesDeplacees+" Ferraille déposé(s) dans la réserve");
@@ -301,7 +298,7 @@ public class Joueur {
             //CAS 4
 
             else if (choix.startsWith("TUILE:")) {
-                placerJetonRail(choix);
+                tuilesRails.add(jeu.getTuile(placerJetonRail(choix)));
                 pointsRails--;
             }
 
@@ -511,12 +508,14 @@ public class Joueur {
      * caractères, et envoie un message d'information.
      * Pré-requis : la chaîne de caractère est de la forme : "TUILE:"+index de la tuile sur le plateau
      * @param choix
+     * @return l'index de la tuile choisie
      */
-    public void placerJetonRail(String choix) {
+    public int placerJetonRail(String choix) {
             int indexTuile = Integer.parseInt(choix.split(":")[1]);
             jeu.getTuile(indexTuile).ajouterRail(this);
             nbJetonsRails--;
             log("A placé un jeton Rails à "+ Plateau.getCoordonnees(indexTuile));
+            return indexTuile;
     }
 
     public int getNbJetonsRails() {
@@ -535,5 +534,45 @@ public class Joueur {
         if (!jeu.getReserve().get("Ferraille").isEmpty()) {
             cartesRecues.add(jeu.prendreDansLaReserve("Ferraille"));
         }
+    }
+
+    /**
+     * Calcul le score du joueur issu des cartes VICTOIRE (et Train de tourisme cas particulier) provenant de la liste
+     * de cartes entrée en paramètre.
+     * @param cartes
+     * @return
+     */
+    public int calculerScoreCartes(ListeDeCartes cartes) {
+        int score = 0;
+        for (Carte carte : cartes) {
+            if (carte instanceof TrainDeTourisme) {
+                score++;
+            }
+//            else if (carte.getClass().getSuperclass().equals(CarteVictoire.class)) {
+//                CarteVictoire carteVictoire = carte; ou (CarteVictoire) carte
+//                score += carteVictoire.getPointVicoire();
+//            }
+        }
+        return score;
+    }
+
+    public int calculerScoreRails() {
+        int score = 0;
+        for (Tuile tuile : jeu.getTuiles()) {
+            if (tuile.hasRail(this)) {
+                score += tuile.getPoint();
+            }
+        }
+        return score;
+    }
+
+    public List<Tuile> getTuilesRails() {
+        List<Tuile> tuilesRails = new ArrayList<>();
+        for (Tuile tuile : jeu.getTuiles()) {
+            if (tuile.hasRail(this)) {
+                tuilesRails.add(tuile);
+            }
+        }
+        return tuilesRails;
     }
 }

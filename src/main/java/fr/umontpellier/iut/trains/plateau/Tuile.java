@@ -112,4 +112,24 @@ public abstract class Tuile {
     public ArrayList<Tuile> getVoisines() {
         return voisines;
     }
+
+    /**
+     * Calcul le nombre de points que rapporte la tuile si un joueur possède un jeton rail dessus.
+     * @return 0 par défault, car pas toutes les tuiles rapportent des points.
+     */
+    public int getPoint() {
+        return 0;
+    }
+
+    /**
+     * Pose une gare sur la tuile, par défault ne fait rien, car on ne peut pas
+     * poser une gare sur une tuile quelconque.
+     */
+    public void ajouterGare() {
+    }
+
+    public boolean peutAjouterGare() {
+        return false;
+    }
+
 }

@@ -40,7 +40,7 @@ public class JoueurEleveTest extends BaseTestClass {
         addAll(main, ferraille1, ferraille2, omni3, omni4, omni5);
         addAll(pioche, gare1, gare2, gare3, gare4, ferraille5, fondPioche);
 
-        jeu.setInput("SPECIAL");
+        jeu.setInput("Ferraille");
         joueur.jouerTour();
 
         assertTrue(containsReferences(main, gare1, gare2, gare3, gare4, ferraille5));
@@ -177,6 +177,32 @@ public class JoueurEleveTest extends BaseTestClass {
         checkPlateau(null, List.of(1, 2), null);
     }
 
+    // @Disabled
+    @Test
+    void test_ajouter_rail_un_seul_jeton_par_tuile_1() {
+        tuiles.get(1).ajouterRail(joueur);
+        setAttribute(joueur, "pointsRails", 5);
+
+        jouerTourPartiel("TUILE:2", "TUILE:2");
+
+        assertEquals(4, getPointsRails(joueur));
+        assertEquals(19, getNbJetonsRails(joueur));
+        checkPlateau(null, List.of(1, 2), null);
+    }
+
+    // @Disabled
+    @Test
+    void test_ajouter_rail_un_seul_jeton_par_tuile_2() {
+        tuiles.get(1).ajouterRail(joueur);
+        setAttribute(joueur, "pointsRails", 5);
+
+        jouerTourPartiel("TUILE:2", "TUILE:1");
+
+        assertEquals(4, getPointsRails(joueur));
+        assertEquals(19, getNbJetonsRails(joueur));
+        checkPlateau(null, List.of(1, 2), null);
+    }
+
     @Disabled
     @Test
     void test_jouerTour_poseDeRail_pas_dispo_si_plus_assez_de_jetons() {
@@ -218,4 +244,25 @@ public class JoueurEleveTest extends BaseTestClass {
         assertTrue(containsReferences(reserve.get("Ferraille")));
     }
 
+    @Disabled
+    @Test
+    void test_calculerScoreCartes() {
+        ListeDeCartes cartes = new ListeDeCartes();
+        addAll(cartes, new Appartement(), new Appartement(), new Immeuble(), new GratteCiel(), new TrainDeTourisme(), new TrainDeTourisme());
+        int res = joueur.calculerScoreCartes(cartes);
+        assertEquals(10, res);
+    }
+
+    // @Disabled
+    @Test
+    void test_calculerScoreRails() {
+        tuiles.get(0).ajouterRail(joueur);
+        tuiles.get(1).ajouterRail(joueur);
+        tuiles.get(8).ajouterRail(joueur);
+        tuiles.get(8).ajouterGare();
+        tuiles.get(8).ajouterGare();
+        tuiles.get(8).ajouterGare();
+
+        assertEquals(12, joueur.calculerScoreRails());
+    }
 }
