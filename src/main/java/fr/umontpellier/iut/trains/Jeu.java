@@ -16,6 +16,8 @@ import fr.umontpellier.iut.trains.cartes.FabriqueListeDeCartes;
 import fr.umontpellier.iut.trains.cartes.ListeDeCartes;
 import fr.umontpellier.iut.trains.plateau.Plateau;
 import fr.umontpellier.iut.trains.plateau.Tuile;
+import fr.umontpellier.iut.trains.plateau.TuileEtoile;
+import fr.umontpellier.iut.trains.plateau.TuileMer;
 
 public class Jeu implements Runnable {
     /**
@@ -192,10 +194,7 @@ public class Jeu implements Runnable {
     public void run() {
         // initialisation (chaque joueur choisit une position de départ)
         // À FAIRE - DONE : compléter la partie initialisation
-
-        for (Joueur joueur : joueurs) {
-            joueur.choisirTuileDeDepart();
-        }
+        initPartie();
 
         // tours des joueurs jusqu'à une condition de fin
         while (!estFini()) {
@@ -340,6 +339,29 @@ public class Jeu implements Runnable {
     //**************************************************************************************/
     /*                             A NETOYER AVANT DE RENDRE                              */
     //**************************************************************************************/
+
+    /**
+     * Initialisation de la partie : place un jeton Rails sur une tuile possible pour l'initialisation du jeu (c-à-d pas de TuileMer ni
+     * TuileEtoile ni Tuile deja choisi par un autre Joueur.
+     */
+    public void initPartie() {
+        List<String> choixPossibles = new ArrayList<>();
+        // Filtrer les tuiles possibles de départ
+        for (Tuile tuile : tuiles) {
+            if (!(tuile instanceof TuileMer) && !(tuile instanceof TuileEtoile)) {
+                choixPossibles.add("TUILE:"+tuiles.indexOf(tuile));
+            }
+        }
+        for (Joueur joueur : joueurs) {
+            log("<div class=\"tour\">Départ de " + joueur.toLog() + "</div>");
+            // Choix de l'action à réaliser (no skip)
+            String choix = joueur.choisir(String.format("Tour de %s", joueur.getNom()), choixPossibles, null, false);
+            // Retirer le choix de ce joueur parmi les choix possibles restants
+            choixPossibles.remove(choix);
+            // Placer jeton Rails sur la tuile choisie par le joueur
+            joueur.placerJetonRail(choix);
+        }
+    }
 
 
 

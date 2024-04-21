@@ -145,19 +145,6 @@ public class JoueurEleveTest extends BaseTestClass {
 
     // @Disabled
     @Test
-    void test_choisirTuileDeDepart() {
-        jeu.setInput("TUILE:1");
-        joueur.choisirTuileDeDepart();
-
-        assertTrue(jeu.getTuile(1).hasRail(joueur));
-        assertFalse(jeu.getTuile(1).hasRail(joueurs.get(0)));
-        assertTrue((jeu.getTuile(1) instanceof TuileTerrain) || (jeu.getTuile(1) instanceof TuileVille));
-        assertEquals(19, getNbJetonsRails(joueur));
-        checkPlateau(null, List.of(1), null);
-    }
-
-    // @Disabled
-    @Test
     void test_ajouter_rail_ne_peut_ajouter_une_seule_rail_par_point_rail() {
         tuiles.get(1).ajouterRail(joueur);
         setAttribute(joueur, "pointsRails", 2);

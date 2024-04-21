@@ -503,31 +503,13 @@ public class Joueur {
         }
     }
 
-
     /**
-     * Action : Place un jeton Rails sur une casse possible pour l'initialisation du jeu (c-à-d pas de TuileMer ni
-     * TuileEtoile ni Tuile deja choisi par un autre Joueur)
+     * Action : le joueur place un jeton rail sur la tuile choisie entrée en paramètre sous la forme d'une chaine de
+     * caractères, et envoie un message d'information.
+     * Pré-requis : la chaîne de caractère est de la forme : "TUILE:"+index de la tuile sur le plateau
+     * @param choix
      */
-    public void choisirTuileDeDepart() {
-        jeu.log("<div class=\"tour\">Départ de " + toLog() + "</div>");
-        List<String> choixPossibles = new ArrayList<>();
-        List<Tuile> tuiles = jeu.getTuiles();
-
-        // Filtrer les tuiles possibles de départ
-        for (Tuile tuile : tuiles) {
-            if (!(tuile instanceof TuileMer) && !(tuile instanceof TuileEtoile) && (tuile.estVide())) {
-                choixPossibles.add("TUILE:"+tuiles.indexOf(tuile));
-            }
-        }
-
-        // Choix de l'action à réaliser (no skip)
-        String choix = choisir(String.format("Tour de %s", this.nom), choixPossibles, null, false);
-
-        // Placer jeton Rails sur la tuile choisie par le joueur
-        placerJetonRail(choix);
-    }
-
-    private void placerJetonRail(String choix) {
+    public void placerJetonRail(String choix) {
             int indexTuile = Integer.parseInt(choix.split(":")[1]);
             jeu.getTuile(indexTuile).ajouterRail(this);
             nbJetonsRails--;
