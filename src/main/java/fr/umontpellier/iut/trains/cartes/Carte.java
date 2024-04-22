@@ -2,11 +2,13 @@ package fr.umontpellier.iut.trains.cartes;
 
 import fr.umontpellier.iut.trains.Joueur;
 
+import java.util.Set;
+
 public abstract class Carte {
     private final String nom;
     private final int cout;
     private final int valeur;
-
+    private final TypeCarte typePrincipal;
 
     /**
      * Constructeur simple
@@ -20,10 +22,11 @@ public abstract class Carte {
      * 
      * @param nom
      */
-    public Carte(String nom, int cout, int valeur) {
+    public Carte(String nom, int cout, int valeur, TypeCarte type) {
         this.nom = nom;
         this.cout = cout;
         this.valeur = valeur;
+        typePrincipal = type;
     }
 
     public String getNom() {
@@ -49,5 +52,20 @@ public abstract class Carte {
     @Override
     public String toString() {
         return "[nom : "+nom + "; valeur : " + valeur+"; cout : "+ cout+"]";
+    }
+
+    //FONCTION AJOUTEE
+
+    /**
+     * Retourne le nombre de points de victoire que rapporte la carte
+     * Par défault renvoie 0, car seulement quelques cartes rapportent des points
+     * @return
+     */
+    public int getPointVictoire() {
+        return 0;
+    }
+
+    public boolean estDeType(TypeCarte type) {
+        return typePrincipal.name().equals(type.name());
     }
 }

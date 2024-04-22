@@ -1,16 +1,16 @@
 package fr.umontpellier.iut.trains.cartes;
 
-import fr.umontpellier.iut.trains.Joueur;
-
 public abstract class CarteVictoire extends Carte {
-    private int pointVictoire;
+    private final int pointVictoire;
+
     public CarteVictoire(String nom, int cout, int valeur, int pv) {
-        super(nom, cout, valeur);
-        pv = pointVictoire;
+        super(nom, cout, valeur, TypeCarte.VICTOIRE);
+        pointVictoire = pv;
     }
 
     //Carte non jouable
 
+    @Override
     public int getPointVictoire() {
         return pointVictoire;
     }

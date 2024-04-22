@@ -2,14 +2,14 @@ package fr.umontpellier.iut.trains.cartes;
 
 import fr.umontpellier.iut.trains.Joueur;
 
-public class Aiguillage extends Carte {
+public class Aiguillage extends CarteAction {
     public Aiguillage() {
         super("Aiguillage", 5,0);
     }
 
 
     /**
-     * Effet : ET JE PIOCHE, DRAGON BLANC AUX YEUX BLEU
+     * Effet : le joueur pioche 2 cartes
      * @param joueur
      */
     @Override
