@@ -9,8 +9,8 @@ public class Aiguillage extends CarteAction {
 
 
     /**
-     * Effet : le joueur pioche 2 cartes
-     * @param joueur
+     * Effet : pioche 2 cartes
+     * @param joueur le joueur qui joue la carte
      */
     @Override
     public void jouer(Joueur joueur) {
