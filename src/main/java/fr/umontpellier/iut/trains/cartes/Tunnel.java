@@ -1,7 +1,7 @@
 package fr.umontpellier.iut.trains.cartes;
 
-public class Tunnel extends Carte {
+public class Tunnel extends CarteRail {
     public Tunnel() {
-        super("Tunnel");
+        super("Tunnel", 5, 0);
     }
 }

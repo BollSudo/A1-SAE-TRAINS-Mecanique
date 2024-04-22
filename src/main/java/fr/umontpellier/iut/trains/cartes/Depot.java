@@ -1,7 +1,7 @@
 package fr.umontpellier.iut.trains.cartes;
 
-public class Depot extends Carte {
+public class Depot extends CarteAction {
     public Depot() {
-        super("Dépôt");
+        super("Dépôt", 3, 1);
     }
 }

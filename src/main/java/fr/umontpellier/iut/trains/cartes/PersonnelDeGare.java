@@ -1,7 +1,7 @@
 package fr.umontpellier.iut.trains.cartes;
 
-public class PersonnelDeGare extends Carte {
+public class PersonnelDeGare extends CarteAction {
     public PersonnelDeGare() {
-        super("Personnel de gare");
+        super("Personnel de gare", 2, 0);
     }
 }
