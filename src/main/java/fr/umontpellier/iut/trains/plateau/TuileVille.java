@@ -26,16 +26,12 @@ public class TuileVille extends Tuile {
 
     @Override
     public int getPoint() {
-        int point=0;
-        switch (nbGaresPosees) {
-            case 1:
-                point=2;
-            case 2:
-                point=4;
-            case 3:
-                point=8;
-        }
-        return point;
+        return switch (nbGaresPosees) {
+            case 1 -> 2;
+            case 2 -> 4;
+            case 3 -> 8;
+            default -> 0;
+        };
     }
 
     @Override
@@ -46,5 +42,10 @@ public class TuileVille extends Tuile {
     @Override
     public boolean peutAjouterGare() {
         return nbGaresPosees < nbGaresMax;
+    }
+
+    @Override
+    public int getSurcout() {
+        return super.getSurcout() + 1 + nbGaresPosees;
     }
 }

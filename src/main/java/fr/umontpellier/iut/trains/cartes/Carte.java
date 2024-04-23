@@ -47,11 +47,12 @@ public abstract class Carte {
      * @param joueur le joueur qui joue la carte
      */
     public void jouer(Joueur joueur) {
+        joueur.incrementerArgent(valeur);
     }
 
     @Override
     public String toString() {
-        return "[nom : "+nom + "; valeur : " + valeur+"; cout : "+ cout+"]";
+        return nom;
     }
 
     //FONCTION AJOUTEE
@@ -66,6 +67,6 @@ public abstract class Carte {
     }
 
     public boolean estDeType(TypeCarte type) {
-        return typePrincipal.name().equals(type.name());
+        return typePrincipal == type;
     }
 }

@@ -118,7 +118,7 @@ public class Joueur {
         score += calculerScoreCartes(pioche);
         score += calculerScoreCartes(defausse);
         score += calculerScoreRails();
-        return 0;
+        return score;
     }
 
     /**
@@ -219,16 +219,16 @@ public class Joueur {
             // À FAIRE - DONE: préparer la liste des choix possibles
             for (Carte c: main) {
                 // ajoute les noms de toutes les cartes en main à choixPossibles
-                if (!c.getNom().equals("Ferraille")) {
+                if (!c.getNom().equals("Ferraille") && !c.estDeType(TypeCarte.VICTOIRE)) {
                     choixPossibles.add(c.getNom());
                 }
             }
             for (String nomCarte: jeu.getReserve().keySet()) {
                 // ajoute les noms des cartes dans la réserve préfixés de "ACHAT:" à choixPossibles
                 // A FAIRE : verifier que la pile n'est pas vide et que le joueur peut l'acheter
-                //if (!(nomCarte.equals("Ferraille")) || (!jeu.getReserve().get(nomCarte).isEmpty()) || (jeu.getReserve().get(nomCarte).get(0).getCout() <= argent)) {
+                if (!(nomCarte.equals("Ferraille")) && (!jeu.getReserve().get(nomCarte).isEmpty()) && (jeu.getReserve().get(nomCarte).get(0).getCout() <= argent)) {
                     choixPossibles.add("ACHAT:" + nomCarte);
-                //}
+                }
             }
             if (premiereAction) {
                 choixPossibles.add("Ferraille"); // action spéciale possible si passe son tour
@@ -239,7 +239,9 @@ public class Joueur {
                     for (Tuile voisine : tuileRails.getVoisines()) {
                         if (!(voisine instanceof TuileMer) && !voisine.hasRail(this)) { //verfier que voisine n'est pas une tuile mer
                             // verifier si assez d'argent pour pose de rail - A FAIRE
-                            choixPossibles.add("TUILE:"+jeu.getTuiles().indexOf(voisine));
+                            if (voisine.getSurcout() <= argent) {
+                                choixPossibles.add("TUILE:"+jeu.getTuiles().indexOf(voisine));
+                            }
                         }
                     }
                 }
@@ -278,6 +280,7 @@ public class Joueur {
                 if (carte != null) {
                     log("Reçoit " + carte); // affichage dans le log
                     cartesRecues.add(carte);
+                    decrementerArgent(carte.getCout());
                 }
             }
 
@@ -330,7 +333,8 @@ public class Joueur {
         defausse.addAll(cartesEnJeu);
         cartesEnJeu.clear();
 
-        main.addAll(piocher(5)); // piocher 5 cartes en main
+        //main.addAll(piocher(5)); // piocher 5 cartes en main
+        ajouterAlaMain(piocher(5));
         //reset
         argent = 0;
         pointsRails = 0;
@@ -518,6 +522,13 @@ public class Joueur {
             return indexTuile;
     }
 
+    public void placerJetonGare(String choix) {
+        int indexTuile = Integer.parseInt(choix.split(":")[1]);
+        jeu.getTuile(indexTuile).ajouterGare();
+        jeu.decrementerNbJetonsGare();
+        log("A placé un jeton Gare à "+ Plateau.getCoordonnees(indexTuile));
+    }
+
     public int getNbJetonsRails() {
         return nbJetonsRails;
     }
@@ -575,4 +586,30 @@ public class Joueur {
         }
         return tuilesRails;
     }
+
+    public List<String> choixTuilesVille() {
+        List<String> choix = new ArrayList<>();
+        for (Tuile tuile : jeu.getTuiles()) {
+            if (tuile.peutAjouterGare()) {
+                choix.add("TUILE:"+jeu.getTuiles().indexOf(tuile));
+            }
+        }
+        return choix;
+    }
+
+    public void ajouterAlaMain(List<Carte> cartes) {
+        main.addAll(cartes);
+    }
+    public void ajouterAlaMain(Carte carte) {
+        main.add(carte);
+    }
+
+    public void incrementerArgent(int valeur) {
+        argent+=valeur;
+    }
+    public void decrementerArgent(int cout) {
+        argent-=cout;
+    }
+
+
 }

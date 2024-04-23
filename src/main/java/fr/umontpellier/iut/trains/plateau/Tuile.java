@@ -1,10 +1,6 @@
 package fr.umontpellier.iut.trains.plateau;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import fr.umontpellier.iut.trains.Joueur;
 
@@ -131,5 +127,11 @@ public abstract class Tuile {
     public boolean peutAjouterGare() {
         return false;
     }
+
+    public int getSurcout() {
+        return rails.size();
+    }
+
+
 
 }

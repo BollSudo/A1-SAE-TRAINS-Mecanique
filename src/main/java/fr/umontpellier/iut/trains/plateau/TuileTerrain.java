@@ -13,4 +13,17 @@ public class TuileTerrain extends Tuile {
         super();
         this.type = type;
     }
+
+    @Override
+    public int getSurcout() {
+        int surcoutBase;
+        if (type==TypeTerrain.FLEUVE) {
+            surcoutBase = 1;
+        } else if (type==TypeTerrain.MONTAGNE) {
+            surcoutBase = 2;
+        } else
+            surcoutBase = 0;
+        return super.getSurcout() + surcoutBase;
+    }
+
 }
