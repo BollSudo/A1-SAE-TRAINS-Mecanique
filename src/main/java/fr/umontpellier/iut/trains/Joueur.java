@@ -621,4 +621,15 @@ public class Joueur {
     public void ajouterCarteSurPioche(Carte carte){
         pioche.add(0, carte);
     }
+
+    public boolean peutPiocher(int x){
+        boolean value = false;
+        if (pioche.size()+defausse.size()>=x){
+            value = true;
+        }
+        return value;
+    }
+    public boolean peutPiocher(){
+        return peutPiocher(1);
+    }
 }
