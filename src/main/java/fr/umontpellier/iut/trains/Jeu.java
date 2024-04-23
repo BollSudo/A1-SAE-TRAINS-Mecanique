@@ -360,7 +360,12 @@ public class Jeu implements Runnable {
             choixPossibles.remove(choix);
             // Placer jeton Rails sur la tuile choisie par le joueur
             joueur.placerJetonRail(choix);
+            passeAuJoueurSuivant();
         }
+    }
+
+    public void decrementerNbJetonsGare() {
+        nbJetonsGare--;
     }
 
 

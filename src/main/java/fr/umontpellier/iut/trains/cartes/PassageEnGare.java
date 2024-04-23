@@ -13,6 +13,7 @@ public class PassageEnGare extends CarteAction {
      */
     @Override
     public void jouer(Joueur joueur) {
-        joueur.piocher();
+        super.jouer(joueur);
+        joueur.ajouterAlaMain(joueur.piocher());
     }
 }

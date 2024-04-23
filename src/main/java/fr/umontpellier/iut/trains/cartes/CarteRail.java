@@ -11,7 +11,9 @@ public abstract class CarteRail extends Carte {
 
     @Override
     public void jouer(Joueur joueur) {
-        throw new RuntimeException("Méthode A FAIRE");
+        super.jouer(joueur);
+        joueur.incrementerPointsRails();
+        joueur.recevoirUneFerraille();
     }
 
     public void effetSurcout(Tuile tuile) {

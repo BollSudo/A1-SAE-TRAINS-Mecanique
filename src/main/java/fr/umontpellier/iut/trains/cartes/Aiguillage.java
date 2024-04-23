@@ -14,6 +14,7 @@ public class Aiguillage extends CarteAction {
      */
     @Override
     public void jouer(Joueur joueur) {
-        joueur.piocher(2);
+        super.jouer(joueur);
+        joueur.ajouterAlaMain(joueur.piocher(2));
     }
 }

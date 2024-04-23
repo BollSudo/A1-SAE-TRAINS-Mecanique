@@ -7,7 +7,7 @@ public abstract class CarteTrainAction extends CarteTrain {
     }
     @Override
     public boolean estDeType(TypeCarte type) {
-        return TypeCarte.ACTION.name().equals(type.name()) ||
-                TypeCarte.TRAIN.name().equals(type.name());
+        return TypeCarte.ACTION==type ||
+                TypeCarte.TRAIN==type;
     }
 }
