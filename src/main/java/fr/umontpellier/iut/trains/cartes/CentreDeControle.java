@@ -1,10 +1,9 @@
 package fr.umontpellier.iut.trains.cartes;
 
+import fr.umontpellier.iut.trains.Bouton;
 import fr.umontpellier.iut.trains.Joueur;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 public class CentreDeControle extends CarteAction {
     public CentreDeControle() {
@@ -14,20 +13,18 @@ public class CentreDeControle extends CarteAction {
     @Override
     public void jouer(Joueur joueur){
         super.jouer(joueur);
-        if (joueur.peutPiocher(2)){
-            joueur.ajouterAlaMain(joueur.piocher());
-            Collection<String> cartesValide = new ArrayList<String>();
-            for (Map.Entry<String, ListeDeCartes> entry : joueur.getJeu().getReserve().entrySet()){
-                cartesValide.add(entry.getKey());
-            }
-            cartesValide.add("Train omnibus");
-            String nomCarteChoisis = joueur.choisir("Choisissez le nom d'une carte", cartesValide, null, true);
-            Carte carte = joueur.piocher();
-            if (nomCarteChoisis == carte.getNom()){
-                joueur.ajouterAlaMain(carte);
-            }else {
-                joueur.ajouterCarteSurPioche(carte);
-            }
+        joueur.ajouterAlaMain(joueur.piocher());
+        List<Bouton> boutonsCartesValides = new ArrayList<>();
+        for (Map.Entry<String, ListeDeCartes> entry : joueur.getJeu().getReserve().entrySet()){
+            boutonsCartesValides.add(new Bouton(entry.getKey(), entry.getKey()));
+        }
+        boutonsCartesValides.add(new Bouton("Train omnibus", "Train omnibus"));
+        String nomCarteChoisis = joueur.choisir("Choisissez le nom d'une carte", null, boutonsCartesValides, false);
+        Carte carte = joueur.piocher();
+        if (carte != null && nomCarteChoisis.equals(carte.getNom())){
+            joueur.ajouterAlaMain(carte);
+        } else {
+            joueur.ajouterCarteSurPioche(carte);
         }
     }
 }

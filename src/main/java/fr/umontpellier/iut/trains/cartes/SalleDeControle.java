@@ -10,8 +10,6 @@ public class SalleDeControle extends CarteAction {
     @Override
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
-        if (joueur.peutPiocher(3)){
-            joueur.ajouterAlaMain(joueur.piocher(3));
-        }
+        joueur.ajouterAlaMain(joueur.piocher(3));
     }
 }
