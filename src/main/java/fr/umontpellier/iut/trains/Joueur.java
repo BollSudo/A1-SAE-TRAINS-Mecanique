@@ -611,5 +611,8 @@ public class Joueur {
         argent-=cout;
     }
 
+    public ListeDeCartes getMain() {
+        return main;
+    }
 
 }
