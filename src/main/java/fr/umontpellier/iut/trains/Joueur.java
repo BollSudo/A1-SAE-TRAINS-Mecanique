@@ -615,4 +615,10 @@ public class Joueur {
         return main;
     }
 
+    public Jeu getJeu() {
+        return jeu;
+    }
+    public void ajouterCarteSurPioche(Carte carte){
+        pioche.add(0, carte);
+    }
 }
