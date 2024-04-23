@@ -301,7 +301,11 @@ public class Joueur {
             //CAS 4
 
             else if (choix.startsWith("TUILE:")) {
-                tuilesRails.add(jeu.getTuile(placerJetonRail(choix)));
+                Tuile tuileChoisie = jeu.getTuile(placerJetonRail(choix));
+                tuilesRails.add(tuileChoisie);
+                if (!tuileChoisie.estVide()) {
+                    this.recevoirUneFerraille();
+                }
                 pointsRails--;
             }
 
@@ -556,13 +560,7 @@ public class Joueur {
     public int calculerScoreCartes(ListeDeCartes cartes) {
         int score = 0;
         for (Carte carte : cartes) {
-            if (carte instanceof TrainDeTourisme) {
-                score++;
-            }
-//            else if (carte.getClass().getSuperclass().equals(CarteVictoire.class)) {
-//                CarteVictoire carteVictoire = carte; ou (CarteVictoire) carte
-//                score += carteVictoire.getPointVicoire();
-//            }
+            score += carte.getPointVictoire();
         }
         return score;
     }
@@ -601,36 +599,26 @@ public class Joueur {
         main.addAll(cartes);
     }
     public void ajouterAlaMain(Carte carte) {
-        main.add(carte);
+        if (carte != null) {
+            main.add(carte);
+        }
     }
-
     public void incrementerArgent(int valeur) {
         argent+=valeur;
     }
     public void decrementerArgent(int cout) {
         argent-=cout;
     }
-
     public ListeDeCartes getMain() {
         return main;
     }
-
     public Jeu getJeu() {
         return jeu;
     }
     public void ajouterCarteSurPioche(Carte carte){
-        pioche.add(0, carte);
-    }
-
-    public boolean peutPiocher(int x){
-        boolean value = false;
-        if (pioche.size()+defausse.size()>=x){
-            value = true;
+        if (carte != null) {
+            pioche.add(0, carte);
         }
-        return value;
-    }
-    public boolean peutPiocher(){
-        return peutPiocher(1);
     }
     public void ajouterCarteDansDefausse(Carte carte){
         defausse.add(carte);
