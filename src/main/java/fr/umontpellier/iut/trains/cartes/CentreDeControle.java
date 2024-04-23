@@ -14,18 +14,20 @@ public class CentreDeControle extends CarteAction {
     @Override
     public void jouer(Joueur joueur){
         super.jouer(joueur);
-        joueur.ajouterAlaMain(joueur.piocher());
-        Collection<String> cartesValide = new ArrayList<String>();
-        for (Map.Entry<String, ListeDeCartes> entry : joueur.getJeu().getReserve().entrySet()){
-            cartesValide.add(entry.getKey());
-        }
-        cartesValide.add("Train omnibus");
-        String nomCarteChoisis = joueur.choisir("Choisissez le nom d'une carte", cartesValide, null, true);
-        Carte carte = joueur.piocher();
-        if (nomCarteChoisis == carte.getNom()){
-            joueur.ajouterAlaMain(carte);
-        }else {
-            joueur.ajouterCarteSurPioche(carte);
+        if (joueur.peutPiocher(2)){
+            joueur.ajouterAlaMain(joueur.piocher());
+            Collection<String> cartesValide = new ArrayList<String>();
+            for (Map.Entry<String, ListeDeCartes> entry : joueur.getJeu().getReserve().entrySet()){
+                cartesValide.add(entry.getKey());
+            }
+            cartesValide.add("Train omnibus");
+            String nomCarteChoisis = joueur.choisir("Choisissez le nom d'une carte", cartesValide, null, true);
+            Carte carte = joueur.piocher();
+            if (nomCarteChoisis == carte.getNom()){
+                joueur.ajouterAlaMain(carte);
+            }else {
+                joueur.ajouterCarteSurPioche(carte);
+            }
         }
     }
 }
