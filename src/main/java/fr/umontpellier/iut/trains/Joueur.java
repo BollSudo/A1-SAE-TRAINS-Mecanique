@@ -632,4 +632,7 @@ public class Joueur {
     public boolean peutPiocher(){
         return peutPiocher(1);
     }
+    public void ajouterCarteDansDefausse(Carte carte){
+        defausse.add(carte);
+    }
 }
