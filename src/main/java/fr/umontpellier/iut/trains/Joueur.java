@@ -635,4 +635,12 @@ public class Joueur {
     public void ajouterCarteDansDefausse(Carte carte){
         defausse.add(carte);
     }
+
+    public ListeDeCartes getCartesEnJeu() {
+        return cartesEnJeu;
+    }
+
+    public void ajouterCarteRecue(Carte carte){
+        cartesRecues.add(carte);
+    }
 }
