@@ -368,6 +368,10 @@ public class Jeu implements Runnable {
         nbJetonsGare--;
     }
 
+    public void ecarterCarte(Carte carte){
+        cartesEcartees.add(carte);
+    }
+
 
 
 }
