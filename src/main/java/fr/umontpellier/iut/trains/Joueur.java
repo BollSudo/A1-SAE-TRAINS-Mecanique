@@ -643,4 +643,8 @@ public class Joueur {
     public void ajouterCarteRecue(Carte carte){
         cartesRecues.add(carte);
     }
+
+    public ListeDeCartes getDefausse(){
+        return defausse;
+    }
 }
