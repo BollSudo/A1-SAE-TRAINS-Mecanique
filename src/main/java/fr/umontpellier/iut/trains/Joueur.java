@@ -233,7 +233,7 @@ public class Joueur {
             if (premiereAction) {
                 choixPossibles.add("Ferraille"); // action spéciale possible si passe son tour
             }
-            if (pointsRails > 0) {
+            if (pointsRails > 0 && nbJetonsRails > 0) {
                 // Filtrer toutes les tuiles voisines jouables du joueur
                 for (Tuile tuileRails : tuilesRails) {
                     for (Tuile voisine : tuileRails.getVoisines()) {

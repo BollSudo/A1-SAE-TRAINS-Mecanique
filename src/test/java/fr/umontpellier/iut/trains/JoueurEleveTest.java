@@ -203,7 +203,7 @@ public class JoueurEleveTest extends BaseTestClass {
         checkPlateau(null, List.of(1, 2), null);
     }
 
-    @Disabled
+    // @Disabled
     @Test
     void test_jouerTour_poseDeRail_pas_dispo_si_plus_assez_de_jetons() {
         tuiles.get(1).ajouterRail(joueur);
@@ -211,12 +211,17 @@ public class JoueurEleveTest extends BaseTestClass {
         Carte pose1 = new PoseDeRails();
         Carte pose2 = new PoseDeRails();
         addAll(main, pose1, pose2);
+        setAttribute(joueur, "pointsRails", 5);
+        setAttribute(joueur, "argent", 10);
 
-        jouerTourPartiel("Pose de rails", "TUILE:2", "Pose de rails", "TUILE:3");
+        jouerTourPartiel("TUILE:2", "TUILE:3");
 
         assertEquals(0, joueur.getNbJetonsRails());
         assertTrue(containsReferences(main));
         assertTrue(containsReferences(cartesEnJeu, pose1, pose2));
+        assertEquals(8, getArgent(joueur));
+        assertEquals(4, getPointsRails(joueur));
+        assertEquals(0, getNbJetonsRails(joueur));
         checkPlateau(null, List.of(1,2), null);
     }
 

@@ -15,12 +15,12 @@ public class Gare extends Carte {
     @Override
     public void jouer(Joueur joueur) {
         List<String> choixPossibles = joueur.choixTuilesVille();
-        if (!choixPossibles.isEmpty()) {
+        if (joueur.getJeu().getNbJetonsGare() > 0) { // 30 jetons gares, plus de choix possibles au total que de jetons gare
             String choix = joueur.choisir("", choixPossibles, null, false);
             if (choix.startsWith("TUILE:")) {
                 joueur.placerJetonGare(choix);
-                joueur.recevoirUneFerraille();
             }
         }
+        joueur.recevoirUneFerraille();
     }
 }

@@ -359,13 +359,17 @@ public class Jeu implements Runnable {
             // Retirer le choix de ce joueur parmi les choix possibles restants
             choixPossibles.remove(choix);
             // Placer jeton Rails sur la tuile choisie par le joueur
-            joueur.placerJetonRail(choix);
+            joueur.placerJetonRail(choix, true);
             passeAuJoueurSuivant();
         }
     }
 
     public void decrementerNbJetonsGare() {
         nbJetonsGare--;
+    }
+
+    public int getNbJetonsGare() {
+        return nbJetonsGare;
     }
 
     public void ecarterCarte(Carte carte){
