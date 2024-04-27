@@ -1,11 +1,6 @@
 package fr.umontpellier.iut.trains;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 
 import fr.umontpellier.iut.trains.cartes.*;
 import fr.umontpellier.iut.trains.plateau.*;
@@ -57,7 +52,6 @@ public class Joueur {
      * Couleur du joueur (utilisé par l'interface graphique)
      */
     private CouleurJoueur couleur;
-
     public Joueur(Jeu jeu, String nom, CouleurJoueur couleur) {
         this.jeu = jeu;
         this.nom = nom;
@@ -216,6 +210,7 @@ public class Joueur {
         // Boucle principale
         while (!finTour) {
             List<String> choixPossibles = new ArrayList<>();
+
             // À FAIRE - DONE: préparer la liste des choix possibles
             for (Carte c: main) {
                 // ajoute les noms de toutes les cartes en main à choixPossibles
@@ -237,9 +232,10 @@ public class Joueur {
                 // Filtrer toutes les tuiles voisines jouables du joueur
                 for (Tuile tuileRails : tuilesRails) {
                     for (Tuile voisine : tuileRails.getVoisines()) {
-                        if (!(voisine instanceof TuileMer) && !voisine.hasRail(this)) { //verfier que voisine n'est pas une tuile mer
+                        if (!(voisine instanceof TuileMer) && !voisine.hasRail(this)) { 
+                            //verfier que voisine n'est pas une tuile mer
                             // verifier si assez d'argent pour pose de rail - A FAIRE
-                            if (voisine.getSurcout() <= argent) {
+                            if ((EffetDuration.ANNULER_SURCOUT_ALL.getEtat() ? 0 : voisine.getSurcout()) <= argent) {
                                 choixPossibles.add("TUILE:"+jeu.getTuiles().indexOf(voisine));
                             }
                         }
@@ -281,6 +277,9 @@ public class Joueur {
                     log("Reçoit " + carte); // affichage dans le log
                     cartesRecues.add(carte);
                     decrementerArgent(carte.getCout());
+                    if (carte.estDeType(TypeCarte.VICTOIRE)) {
+                        recevoirUneFerraille();
+                    }
                 }
             }
 
@@ -301,12 +300,8 @@ public class Joueur {
             //CAS 4
 
             else if (choix.startsWith("TUILE:")) {
-                Tuile tuileChoisie = jeu.getTuile(placerJetonRail(choix));
+                Tuile tuileChoisie = jeu.getTuile(placerJetonRail(choix, false));
                 tuilesRails.add(tuileChoisie);
-                if (!tuileChoisie.estVide()) {
-                    this.recevoirUneFerraille();
-                }
-                pointsRails--;
             }
 
             //CAS 5
@@ -342,6 +337,7 @@ public class Joueur {
         //reset
         argent = 0;
         pointsRails = 0;
+        EffetDuration.resetAll();
     }
 
     /**
@@ -518,12 +514,20 @@ public class Joueur {
      * @param choix
      * @return l'index de la tuile choisie
      */
-    public int placerJetonRail(String choix) {
-            int indexTuile = Integer.parseInt(choix.split(":")[1]);
-            jeu.getTuile(indexTuile).ajouterRail(this);
-            nbJetonsRails--;
-            log("A placé un jeton Rails à "+ Plateau.getCoordonnees(indexTuile));
-            return indexTuile;
+    public int placerJetonRail(String choix, boolean debutTour) {
+        int indexTuile = Integer.parseInt(choix.split(":")[1]);
+        Tuile tuileChoisie = jeu.getTuile(indexTuile);
+        if (!debutTour) {
+            decrementerArgent((EffetDuration.ANNULER_SURCOUT_ALL.getEtat() ? 0 : tuileChoisie.getSurcout()));
+            pointsRails--;
+            if (!tuileChoisie.estVide() && !EffetDuration.ANNULER_SURCOUT_RAILS.getEtat()) {
+                recevoirUneFerraille();
+            }
+        }
+        tuileChoisie.ajouterRail(this);
+        nbJetonsRails--;
+        log("A placé un jeton Rails à "+ Plateau.getCoordonnees(indexTuile));
+        return indexTuile;
     }
 
     public void placerJetonGare(String choix) {

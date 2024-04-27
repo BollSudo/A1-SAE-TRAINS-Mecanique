@@ -15,8 +15,4 @@ public abstract class CarteRail extends Carte {
         joueur.incrementerPointsRails();
         joueur.recevoirUneFerraille();
     }
-
-    public void effetSurcout(Tuile tuile) {
-
-    }
 }

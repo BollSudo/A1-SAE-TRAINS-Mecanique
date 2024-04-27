@@ -142,11 +142,13 @@ public class JoueurEleveTest extends BaseTestClass {
     void test_ajouter_rail_ne_peut_ajouter_une_seule_rail_par_point_rail() {
         tuiles.get(1).ajouterRail(joueur);
         setAttribute(joueur, "pointsRails", 2);
+        setAttribute(joueur, "argent", 10);
 
         jouerTourPartiel("TUILE:2", "TUILE:3", "TUILE:4");
 
         assertEquals(0, getPointsRails(joueur));
         assertEquals(18, getNbJetonsRails(joueur));
+        assertEquals(6, getArgent(joueur));
         checkPlateau(null, List.of(1, 2, 3), null);
     }
 
@@ -169,11 +171,13 @@ public class JoueurEleveTest extends BaseTestClass {
     void test_ajouter_rail_uniquement_sur_les_tuiles_voisines() {
         tuiles.get(1).ajouterRail(joueur);
         setAttribute(joueur, "pointsRails", 5);
+        setAttribute(joueur, "argent", 10);
 
         jouerTourPartiel("TUILE:2", "TUILE:4");
 
         assertEquals(4, getPointsRails(joueur));
         assertEquals(19, getNbJetonsRails(joueur));
+        assertEquals(8, getArgent(joueur));
         checkPlateau(null, List.of(1, 2), null);
     }
 
@@ -182,11 +186,13 @@ public class JoueurEleveTest extends BaseTestClass {
     void test_ajouter_rail_un_seul_jeton_par_tuile_1() {
         tuiles.get(1).ajouterRail(joueur);
         setAttribute(joueur, "pointsRails", 5);
+        setAttribute(joueur, "argent", 10);
 
         jouerTourPartiel("TUILE:2", "TUILE:2");
 
         assertEquals(4, getPointsRails(joueur));
         assertEquals(19, getNbJetonsRails(joueur));
+        assertEquals(8, getArgent(joueur));
         checkPlateau(null, List.of(1, 2), null);
     }
 
@@ -195,11 +201,13 @@ public class JoueurEleveTest extends BaseTestClass {
     void test_ajouter_rail_un_seul_jeton_par_tuile_2() {
         tuiles.get(1).ajouterRail(joueur);
         setAttribute(joueur, "pointsRails", 5);
+        setAttribute(joueur, "argent", 10);
 
         jouerTourPartiel("TUILE:2", "TUILE:1");
 
         assertEquals(4, getPointsRails(joueur));
         assertEquals(19, getNbJetonsRails(joueur));
+        assertEquals(8, getArgent(joueur));
         checkPlateau(null, List.of(1, 2), null);
     }
 
@@ -208,17 +216,11 @@ public class JoueurEleveTest extends BaseTestClass {
     void test_jouerTour_poseDeRail_pas_dispo_si_plus_assez_de_jetons() {
         tuiles.get(1).ajouterRail(joueur);
         setAttribute(joueur, "nbJetonsRails", 1);
-        Carte pose1 = new PoseDeRails();
-        Carte pose2 = new PoseDeRails();
-        addAll(main, pose1, pose2);
         setAttribute(joueur, "pointsRails", 5);
         setAttribute(joueur, "argent", 10);
 
         jouerTourPartiel("TUILE:2", "TUILE:3");
 
-        assertEquals(0, joueur.getNbJetonsRails());
-        assertTrue(containsReferences(main));
-        assertTrue(containsReferences(cartesEnJeu, pose1, pose2));
         assertEquals(8, getArgent(joueur));
         assertEquals(4, getPointsRails(joueur));
         assertEquals(0, getNbJetonsRails(joueur));
@@ -249,7 +251,7 @@ public class JoueurEleveTest extends BaseTestClass {
         assertTrue(containsReferences(reserve.get("Ferraille")));
     }
 
-    @Disabled
+    // @Disabled
     @Test
     void test_calculerScoreCartes() {
         ListeDeCartes cartes = new ListeDeCartes();

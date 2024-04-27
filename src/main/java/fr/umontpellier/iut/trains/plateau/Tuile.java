@@ -3,6 +3,7 @@ package fr.umontpellier.iut.trains.plateau;
 import java.util.*;
 
 import fr.umontpellier.iut.trains.Joueur;
+import fr.umontpellier.iut.trains.cartes.EffetDuration;
 
 public abstract class Tuile {
     /**
@@ -129,9 +130,7 @@ public abstract class Tuile {
     }
 
     public int getSurcout() {
-        return rails.size();
+        return EffetDuration.ANNULER_SURCOUT_RAILS.getEtat() ? 0 : rails.size();
+        //le surcout doit etre calculer avant la pose de rail du joueur sinon rails.size() fausse
     }
-
-
-
 }
