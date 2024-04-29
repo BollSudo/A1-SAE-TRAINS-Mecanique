@@ -266,4 +266,93 @@ public class CartesEleveTest extends BaseTestClass {
         assertFalse(containsReferences(reserve.get("Gratte-ciel"), c3));
     }
 
+    // @Disabled
+    @Test
+    void test_train_postal_defausse_tout() {
+        Carte c = new TrainPostal();
+        Carte fondPioche = new Ferraille();
+        Carte t1 = new TrainOmnibus();
+        Carte t2 = new TrainOmnibus();
+        Carte t3 = new TrainOmnibus();
+
+        addAll(main, c, t1, t2, t3);
+        addAll(pioche, fondPioche);
+
+        jouerTourPartiel("Train postal", "Train omnibus", "Train omnibus", "Train omnibus", "");
+
+        assertTrue(containsReferences(main));
+        assertTrue(containsReferencesInOrder(pioche, fondPioche));
+        assertTrue(containsReferences(defausse, t1, t2, t3));
+        assertTrue(containsReferences(cartesEnJeu, c));
+        assertTrue(containsReferences(cartesRecues));
+        assertEquals(34, getArgent(joueur));
+        assertEquals(10, getPointsRails(joueur));
+    }
+
+    // @Disabled
+    @Test
+    void test_train_postal_defausse_plusieurs() {
+        Carte c = new TrainPostal();
+        Carte fondPioche = new Ferraille();
+        Carte t1 = new TrainOmnibus();
+        Carte t2 = new TrainOmnibus();
+        Carte t3 = new TrainOmnibus();
+
+        addAll(main, c, t1, t2, t3);
+        addAll(pioche, fondPioche);
+
+        jouerTourPartiel("Train postal", "Train omnibus", "Train omnibus", "");
+
+        assertTrue(containsReferences(main, t3));
+        assertTrue(containsReferencesInOrder(pioche, fondPioche));
+        assertTrue(containsReferences(defausse, t1, t2));
+        assertTrue(containsReferences(cartesEnJeu, c));
+        assertTrue(containsReferences(cartesRecues));
+        assertEquals(33, getArgent(joueur));
+        assertEquals(10, getPointsRails(joueur));
+    }
+
+    // @Disabled
+    @Test
+    void test_train_postal_defausse_rien() {
+        Carte c = new TrainPostal();
+        Carte fondPioche = new Ferraille();
+        Carte t1 = new TrainOmnibus();
+        Carte t2 = new TrainOmnibus();
+        Carte t3 = new TrainOmnibus();
+
+        addAll(main, c, t1, t2, t3);
+        addAll(pioche, fondPioche);
+
+        jouerTourPartiel("Train postal", "");
+
+        assertTrue(containsReferences(main, t1, t2, t3));
+        assertTrue(containsReferencesInOrder(pioche, fondPioche));
+        assertTrue(containsReferences(defausse));
+        assertTrue(containsReferences(cartesEnJeu, c));
+        assertTrue(containsReferences(cartesRecues));
+        assertEquals(31, getArgent(joueur));
+        assertEquals(10, getPointsRails(joueur));
+    }
+
+    // @Disabled
+    @Test
+    void test_train_postal_defausse_aucune_carte_en_main() {
+        Carte c = new TrainPostal();
+        Carte fondPioche = new Ferraille();
+
+        addAll(main, c);
+        addAll(pioche, fondPioche);
+
+        jouerTourPartiel("Train postal", "");
+
+        assertTrue(containsReferences(main));
+        assertTrue(containsReferencesInOrder(pioche, fondPioche));
+        assertTrue(containsReferences(defausse));
+        assertTrue(containsReferences(cartesEnJeu, c));
+        assertTrue(containsReferences(cartesRecues));
+        assertEquals(31, getArgent(joueur));
+        assertEquals(10, getPointsRails(joueur));
+    }
+
 }
