@@ -125,8 +125,20 @@ public abstract class Tuile {
     public void ajouterGare() {
     }
 
-    public boolean peutAjouterGare() {
+    /**
+     * Vérifie si l'on peut construire une gare sur la tuile. Cette méthode est indépendante du joueur.
+     * @return false par défault car seul la TuileVille peut avoir des gares.
+     */
+    public boolean peutAvoirGare() {
         return false;
+    }
+
+    /**
+     * Vérifie si l'on peut construire un rail sur la tuile. Cette méthode est indépendante du joueur.
+     * @return true par défault car seul la TuileMer ne peut pas avoir de rail.
+     */
+    public boolean peutAvoirRail() {
+        return true;
     }
 
     public int getSurcout() {

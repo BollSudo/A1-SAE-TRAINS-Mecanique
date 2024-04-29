@@ -348,7 +348,7 @@ public class Jeu implements Runnable {
         List<String> choixPossibles = new ArrayList<>();
         // Filtrer les tuiles possibles de départ
         for (Tuile tuile : tuiles) {
-            if (!(tuile instanceof TuileMer) && !(tuile instanceof TuileEtoile)) {
+            if (tuile.peutAvoirRail() && tuile.getPoint()==0) { //vérifie si ce n'est pas une tuile mer ou une tuile etoile
                 choixPossibles.add("TUILE:"+tuiles.indexOf(tuile));
             }
         }

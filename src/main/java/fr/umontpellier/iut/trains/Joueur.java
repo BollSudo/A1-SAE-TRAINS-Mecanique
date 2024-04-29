@@ -232,7 +232,7 @@ public class Joueur {
                 // Filtrer toutes les tuiles voisines jouables du joueur
                 for (Tuile tuileRails : tuilesRails) {
                     for (Tuile voisine : tuileRails.getVoisines()) {
-                        if (!(voisine instanceof TuileMer) && !voisine.hasRail(this)) { 
+                        if (voisine.peutAvoirRail() && !voisine.hasRail(this)) {
                             //verfier que voisine n'est pas une tuile mer
                             // verifier si assez d'argent pour pose de rail - A FAIRE
                             if ((EffetDuration.ANNULER_SURCOUT_ALL.getEtat() ? 0 : voisine.getSurcout()) <= argent) {
@@ -592,7 +592,7 @@ public class Joueur {
     public List<String> choixTuilesVille() {
         List<String> choix = new ArrayList<>();
         for (Tuile tuile : jeu.getTuiles()) {
-            if (tuile.peutAjouterGare()) {
+            if (tuile.peutAvoirGare()) {
                 choix.add("TUILE:"+jeu.getTuiles().indexOf(tuile));
             }
         }

@@ -46,7 +46,7 @@ public class TuileVille extends Tuile {
     }
 
     @Override
-    public boolean peutAjouterGare() {
+    public boolean peutAvoirGare() {
         return nbGaresPosees < nbGaresMax;
     }
 
