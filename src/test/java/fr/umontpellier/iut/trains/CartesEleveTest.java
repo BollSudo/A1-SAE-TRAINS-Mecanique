@@ -433,4 +433,29 @@ public class CartesEleveTest extends BaseTestClass {
         assertTrue(containsReferences(reserve.get("Ferraille")));
     }
 
+    // @Disabled
+    @Test
+    void test_train_matinal_oui_non_oui() {
+        Carte c = new TrainMatinal();
+        Carte fondPioche = new Ferraille();
+        Carte gare1 = reserve.get("Gare").get(0);
+        Carte gare2 = reserve.get("Gare").get(1);
+        Carte gare3 = reserve.get("Gare").get(2);
+
+        addAll(main, c);
+        addAll(pioche, fondPioche);
+
+        jouerTourPartiel("Train matinal", "ACHAT:Gare", "oui", "ACHAT:Gare", "non",
+                "ACHAT:Gare", "oui");
+
+        assertTrue(containsReferences(main));
+        assertTrue(containsReferencesInOrder(pioche, gare3, gare1, fondPioche));
+        assertTrue(containsReferences(defausse));
+        assertTrue(containsReferences(cartesEnJeu, c));
+        assertTrue(containsReferences(cartesRecues, gare2));
+        assertEquals(23, getArgent(joueur));
+        assertEquals(10, getPointsRails(joueur));
+        assertFalse(containsReferences(reserve.get("Gare"), gare1, gare2, gare3));
+    }
+
 }

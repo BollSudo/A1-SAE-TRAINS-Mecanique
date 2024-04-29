@@ -275,7 +275,21 @@ public class Joueur {
                 Carte carte = jeu.prendreDansLaReserve(nomCarte);
                 if (carte != null) {
                     log("Reçoit " + carte); // affichage dans le log
-                    cartesRecues.add(carte);
+                    if (EffetDuration.PLACER_ACHAT_SUR_DECK.getEtat()) { //effet train matinal
+                        List<Bouton> choixBoutons = new ArrayList<>();
+                        choixBoutons.add(new Bouton("Oui", "oui"));
+                        choixBoutons.add(new Bouton("Non", "non"));
+                        String choixBouton = choisir("Voulez-vous placer cette carte "+nomCarte+
+                                " directement au dessus de votre deck", null, choixBoutons, false);
+                        if (choixBouton.equals("oui")) {
+                            pioche.add(0, carte);
+                        }
+                        else {
+                            cartesRecues.add(carte);
+                        }
+                    } else {
+                        cartesRecues.add(carte);
+                    }
                     decrementerArgent(carte.getCout());
                     if (carte.estDeType(TypeCarte.VICTOIRE)) {
                         recevoirUneFerraille();
@@ -312,9 +326,6 @@ public class Joueur {
                 cartesEnJeu.add(carte); // mettre la carte en jeu
                 carte.jouer(this);  // exécuter l'action de la carte
             }
-
-            // if carte.detyperail
-            // if carte.effetapllicable
 
             //fin de la premiere action
             premiereAction = false;

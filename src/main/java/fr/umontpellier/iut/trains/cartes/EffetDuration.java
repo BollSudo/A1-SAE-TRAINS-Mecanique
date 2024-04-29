@@ -1,7 +1,7 @@
 package fr.umontpellier.iut.trains.cartes;
 
 public enum EffetDuration {
-    ANNULER_SURCOUT_VILLE, ANNULER_SURCOUT_MONTAGNE, ANNULER_SURCOUT_RIVIERE, ANNULER_SURCOUT_RAILS, ANNULER_SURCOUT_ALL;
+    ANNULER_SURCOUT_VILLE, ANNULER_SURCOUT_MONTAGNE, ANNULER_SURCOUT_RIVIERE, ANNULER_SURCOUT_RAILS, ANNULER_SURCOUT_ALL, PLACER_ACHAT_SUR_DECK;
 
     private boolean etat;
     private int stacks; //pour effet stackable (Ferronerie)
