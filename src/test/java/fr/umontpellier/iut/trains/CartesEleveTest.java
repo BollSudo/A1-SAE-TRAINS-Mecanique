@@ -355,4 +355,82 @@ public class CartesEleveTest extends BaseTestClass {
         assertEquals(10, getPointsRails(joueur));
     }
 
+    // @Disabled
+    @Test
+    void test_train_de_marchandises_tout_ferraille() {
+        Carte c = new TrainDeMarchandises();
+        Carte fondPioche = new Ferraille();
+        Carte f1 = new Ferraille();
+        Carte f2 = new Ferraille();
+        Carte f3 = new Ferraille();
+        Carte t1 = new TrainOmnibus();
+        reserve.get("Ferraille").clear();
+
+        addAll(main, c, f1, f2, f3, t1);
+        addAll(pioche, fondPioche);
+
+        jouerTourPartiel("Train de marchandises", "Ferraille", "Ferraille", "Ferraille", "");
+
+        assertTrue(containsSame(main, t1));
+        assertTrue(containsReferencesInOrder(pioche, fondPioche));
+        assertTrue(containsReferences(defausse));
+        assertTrue(containsReferences(cartesEnJeu, c));
+        assertTrue(containsReferences(cartesRecues));
+        assertEquals(34, getArgent(joueur));
+        assertEquals(10, getPointsRails(joueur));
+        assertEquals(3,  reserve.get("Ferraille").size());
+        assertTrue(containsReferences(reserve.get("Ferraille"), f1, f2, f3));
+    }
+
+    // @Disabled
+    @Test
+    void test_train_de_marchandises_aucune_ferraille() {
+        Carte c = new TrainDeMarchandises();
+        Carte fondPioche = new Ferraille();
+        Carte f1 = new Ferraille();
+        Carte f2 = new Ferraille();
+        Carte f3 = new Ferraille();
+        Carte t1 = new TrainOmnibus();
+        reserve.get("Ferraille").clear();
+
+        addAll(main, c, f1, f2, f3, t1);
+        addAll(pioche, fondPioche);
+
+        jouerTourPartiel("Train de marchandises", "");
+
+        assertTrue(containsSame(main, f1, f2, f3, t1));
+        assertTrue(containsReferencesInOrder(pioche, fondPioche));
+        assertTrue(containsReferences(defausse));
+        assertTrue(containsReferences(cartesEnJeu, c));
+        assertTrue(containsReferences(cartesRecues));
+        assertEquals(31, getArgent(joueur));
+        assertEquals(10, getPointsRails(joueur));
+        assertEquals(0,  reserve.get("Ferraille").size());
+        assertTrue(containsReferences(reserve.get("Ferraille")));
+    }
+
+    // @Disabled
+    @Test
+    void test_train_de_marchandises_aucune_ferraille_dispo() {
+        Carte c = new TrainDeMarchandises();
+        Carte fondPioche = new Ferraille();
+        Carte t1 = new TrainOmnibus();
+        reserve.get("Ferraille").clear();
+
+        addAll(main, c, t1);
+        addAll(pioche, fondPioche);
+
+        jouerTourPartiel("Train de marchandises", "Ferraille", "", "Train omnibus");
+
+        assertTrue(containsSame(main));
+        assertTrue(containsReferencesInOrder(pioche, fondPioche));
+        assertTrue(containsReferences(defausse));
+        assertTrue(containsReferences(cartesEnJeu, c, t1));
+        assertTrue(containsReferences(cartesRecues));
+        assertEquals(32, getArgent(joueur));
+        assertEquals(10, getPointsRails(joueur));
+        assertEquals(0,  reserve.get("Ferraille").size());
+        assertTrue(containsReferences(reserve.get("Ferraille")));
+    }
+
 }
