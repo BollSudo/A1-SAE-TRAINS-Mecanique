@@ -52,6 +52,8 @@ public class Joueur {
      * Couleur du joueur (utilisé par l'interface graphique)
      */
     private CouleurJoueur couleur;
+    //ATTRIBUT AJOUTE (score actuel du joueur provenant des cartes)
+    private int score = 0;
     public Joueur(Jeu jeu, String nom, CouleurJoueur couleur) {
         this.jeu = jeu;
         this.nom = nom;
@@ -107,12 +109,7 @@ public class Joueur {
      * @return le score total du joueur
      */
     public int getScoreTotal() {
-        int score = 0;
-        score += calculerScoreCartes(main);
-        score += calculerScoreCartes(pioche);
-        score += calculerScoreCartes(defausse);
-        score += calculerScoreRails();
-        return score;
+        return score + calculerScoreRails();
     }
 
     /**
@@ -293,6 +290,7 @@ public class Joueur {
                     decrementerArgent(carte.getCout());
                     if (carte.estDeType(TypeCarte.VICTOIRE)) {
                         recevoirUneFerraille();
+                        score += carte.getPointVictoire();
                     }
                 }
             }
@@ -650,4 +648,16 @@ public class Joueur {
     public ListeDeCartes getDefausse(){
         return defausse;
     }
+
+    public void ecarterCarte(Carte carte){
+        if (carte != null) {
+            getJeu().getCartesEcartees().add(carte);
+            score -= carte.getPointVictoire();
+        }
+    }
+
+    public void incrementerScore() {
+        score++;
+    }
+
 }

@@ -20,8 +20,8 @@ public class HorairesEstivaux extends CarteAction {
 
         String rep = joueur.choisir("Voulez vous défaussez la carte ?", null, boutons, true);
 
-        if (rep == "oui"){
-            joueur.getJeu().ecarterCarte(joueur.getCartesEnJeu().retirer("Horaires estivaux"));
+        if (rep.equals("oui")){
+            joueur.ecarterCarte(joueur.getCartesEnJeu().retirer("Horaires estivaux"));
             joueur.incrementerArgent(3);
         }
     }

@@ -15,10 +15,9 @@ public class CentreDeControle extends CarteAction {
         super.jouer(joueur);
         joueur.ajouterAlaMain(joueur.piocher());
         List<Bouton> boutonsCartesValides = new ArrayList<>();
-        for (Map.Entry<String, ListeDeCartes> entry : joueur.getJeu().getReserve().entrySet()){
-            boutonsCartesValides.add(new Bouton(entry.getKey(), entry.getKey()));
+        for (String choix : joueur.getJeu().getListeNomsCartes()) {
+            boutonsCartesValides.add(new Bouton(choix, choix));
         }
-        boutonsCartesValides.add(new Bouton("Train omnibus", "Train omnibus"));
         String nomCarteChoisis = joueur.choisir("Choisissez le nom d'une carte", null, boutonsCartesValides, false);
         Carte carte = joueur.piocher();
         if (carte != null && nomCarteChoisis.equals(carte.getNom())){

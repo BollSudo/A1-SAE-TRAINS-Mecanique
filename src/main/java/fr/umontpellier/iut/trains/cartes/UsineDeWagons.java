@@ -21,7 +21,7 @@ public class UsineDeWagons extends CarteTrainAction {
         }
         String nomCarteValide = joueur.choisir("Choisissez une carte train à équarter", cartesValide, null, false);
         Carte c = joueur.getMain().retirer(nomCarteValide);
-        joueur.getJeu().ecarterCarte(c);
+        joueur.ecarterCarte(c);
         return c.getCout();
     }
 
