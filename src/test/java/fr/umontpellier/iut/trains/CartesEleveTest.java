@@ -458,4 +458,50 @@ public class CartesEleveTest extends BaseTestClass {
         assertFalse(containsReferences(reserve.get("Gare"), gare1, gare2, gare3));
     }
 
+    // @Disabled
+    @Test
+    void test_atelier_de_maintenance_carte_train_en_main_no_pass() {
+        Carte c = new AtelierDeMaintenance();
+        Carte fondPioche = new Ferraille();
+        Carte gare = new Gare();
+        Carte expr1 = new TrainExpress();
+        Carte expr2 = reserve.get("Train express").get(0);
+
+        addAll(main, c, expr1, gare);
+        addAll(pioche, fondPioche);
+
+
+        jouerTourPartiel("Atelier de maintenance", "", "Gare", "Train express");
+
+        assertTrue(containsReferences(main, expr1, gare));
+        assertTrue(containsReferencesInOrder(pioche, fondPioche));
+        assertTrue(containsReferences(defausse));
+        assertTrue(containsReferences(cartesEnJeu, c));
+        assertTrue(containsReferences(cartesRecues, expr2));
+        assertFalse(containsReference(reserve.get("Train express"), expr2));
+        assertEquals(30, getArgent(joueur));
+        assertEquals(10, getPointsRails(joueur));
+    }
+
+    // @Disabled
+    @Test
+    void test_atelier_de_maintenance_pas_de_carte_train_en_main_can_pass() {
+        Carte c = new AtelierDeMaintenance();
+        Carte fondPioche = new Ferraille();
+        Carte depot = new Depotoir();
+
+        addAll(main, c, depot);
+        addAll(pioche, fondPioche);
+
+        jouerTourPartiel("Atelier de maintenance", "", "Dépotoir");
+
+        assertTrue(containsReferences(main));
+        assertTrue(containsReferencesInOrder(pioche, fondPioche));
+        assertTrue(containsReferences(defausse));
+        assertTrue(containsReferences(cartesEnJeu, c, depot));
+        assertTrue(containsReferences(cartesRecues));
+        assertEquals(31, getArgent(joueur));
+        assertEquals(10, getPointsRails(joueur));
+    }
+
 }

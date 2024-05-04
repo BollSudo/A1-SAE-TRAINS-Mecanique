@@ -13,16 +13,16 @@ public class AtelierDeMaintenance extends CarteAction {
     @Override
     public void jouer(Joueur joueur){
         super.jouer(joueur);
-        ListeDeCartes allCartes = joueur.getMain();
-        Collection<String> cartesValide = new ArrayList<String>();
-        for (Carte carte : allCartes) {
+        Collection<String> cartesValide = new ArrayList<>();
+        for (Carte carte : joueur.getMain()) {
             if (carte.estDeType(TypeCarte.TRAIN)) {
                 cartesValide.add(carte.getNom());
             }
         }
-        String nomCarteChoisis = joueur.choisir("Choisissez une carte en main de type train", cartesValide, null, false);
-
-        Carte carte_ajout = joueur.getJeu().getReserve().get(nomCarteChoisis).remove(0);
-        joueur.ajouterCarteRecue(carte_ajout);
+        String nomCarteChoisie = joueur.choisir("Choisissez une carte en main de type TRAIN",
+                cartesValide, null, false);
+        if (!nomCarteChoisie.equals("")) {
+            joueur.ajouterCarteRecue(joueur.getJeu().prendreDansLaReserve(nomCarteChoisie));
+        }
     }
 }

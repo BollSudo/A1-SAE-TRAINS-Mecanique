@@ -634,7 +634,9 @@ public class Joueur {
         }
     }
     public void ajouterCarteDansDefausse(Carte carte){
-        defausse.add(carte);
+        if (carte != null) {
+            defausse.add(carte);
+        }
     }
 
     public ListeDeCartes getCartesEnJeu() {
@@ -642,7 +644,9 @@ public class Joueur {
     }
 
     public void ajouterCarteRecue(Carte carte){
-        cartesRecues.add(carte);
+        if (carte != null) {
+            cartesRecues.add(carte);
+        }
     }
 
     public ListeDeCartes getDefausse(){
