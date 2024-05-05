@@ -13,21 +13,19 @@ public class PersonnelDeGare extends CarteAction {
 
     @Override
     public void jouer(Joueur joueur){
-        Bouton boutonPioche = new Bouton("piocher", "piocher");
-        Bouton boutonFerraille = new Bouton("ferraille", "ferraille");
-        Bouton boutonArgent = new Bouton("argent", "argent");
+        Bouton boutonPioche = new Bouton("Piocher", "piocher");
+        Bouton boutonFerraille = new Bouton("Ferraille", "ferraille");
+        Bouton boutonArgent = new Bouton("Argent", "argent");
         List<Bouton> boutons = Arrays.asList(boutonPioche, boutonFerraille, boutonArgent);
 
-        String rep = joueur.choisir("Choisissez un parmi les trois :", null, boutons, false);
+        String rep = joueur.choisir("Choisissez une option parmi les trois :", null, boutons, false);
 
-        if (rep == "piocher"){
+        if (rep.equals("piocher")){
             joueur.ajouterAlaMain(joueur.piocher());
-        } else if (rep == "ferraille"){
-            Carte c = joueur.getMain().retirer("Ferraille");
-            joueur.getJeu().getReserve().get("Ferraille").add(c);
+        } else if (rep.equals("ferraille")){
+            joueur.removeUneFerrailleDepuisMain();
         } else {
             joueur.incrementerArgent(1);
         }
     }
-    
 }

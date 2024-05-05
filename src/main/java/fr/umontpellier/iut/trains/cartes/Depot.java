@@ -18,13 +18,13 @@ public class Depot extends CarteAction {
         for (Carte carte : joueur.getMain()){
             cartesValide.add(carte.getNom());
         }
-        String carte1 = joueur.choisir("Choisissez le nom de la carte à défaussé", cartesValide, null, false);
-        joueur.ajouterCarteDansDefausse(joueur.getMain().getCarte(carte1));
-        joueur.getMain().retirer(carte1);
-        cartesValide.remove(carte1);
-        String carte2 = joueur.choisir("Choisissez le nom de la carte à défaussé", cartesValide, null, false);
-        joueur.ajouterCarteDansDefausse(joueur.getMain().getCarte(carte2));
-        joueur.getMain().retirer(carte2);
 
+        int compteur = 2;
+        while ((!joueur.getMain().isEmpty()) && compteur > 0) {
+            String carte = joueur.choisir("Choisissez le nom de la carte à défausser", cartesValide, null, false);
+            joueur.ajouterCarteDansDefausse(joueur.getMain().retirer(carte));
+            cartesValide.remove(carte);
+            compteur--;
+        }
     }
 }

@@ -201,6 +201,7 @@ public class Joueur {
         // À FAIRE - DONE : compléter l'initialisation du tour si nécessaire (mais possiblement
         // rien de spécial à faire)
 
+        EffetDuration.resetAll();
         boolean finTour = false;
         boolean premiereAction = true;
         List<Tuile> tuilesRails = getTuilesRails();
@@ -323,6 +324,10 @@ public class Joueur {
                 log("Joue " + carte); // affichage dans le log
                 cartesEnJeu.add(carte); // mettre la carte en jeu
                 carte.jouer(this);  // exécuter l'action de la carte
+
+                if (EffetDuration.FERRONNERIE.getEtat() && carte.estDeType(TypeCarte.RAIL)) {
+                    incrementerArgent(2 * EffetDuration.FERRONNERIE.getStacks());
+                }
             }
 
             //fin de la premiere action
@@ -346,7 +351,6 @@ public class Joueur {
         //reset
         argent = 0;
         pointsRails = 0;
-        EffetDuration.resetAll();
     }
 
     /**
@@ -497,9 +501,16 @@ public class Joueur {
     public int removeAllFerrailleDepuisMain() {
         int count = main.count("Ferraille");
         for (int i = 0; i < count ; i++) {
-            jeu.getReserve().get("Ferraille").add(main.retirer("Ferraille"));
+            removeUneFerrailleDepuisMain();
         }
         return count;
+    }
+
+    public void removeUneFerrailleDepuisMain() {
+        Carte f;
+        if ((f = main.retirer("Ferraille")) != null) {
+            jeu.getReserve().get("Ferraille").add(f);
+        }
     }
 
     /**
@@ -559,7 +570,7 @@ public class Joueur {
      * Ne fait rien si la pile Ferraille est vide.
      */
     public void recevoirUneFerraille() {
-        if (!jeu.getReserve().get("Ferraille").isEmpty()) {
+        if (!jeu.getReserve().get("Ferraille").isEmpty() && !EffetDuration.DEPOTOIR.getEtat()) {
             cartesRecues.add(jeu.prendreDansLaReserve("Ferraille"));
         }
     }
@@ -639,6 +650,10 @@ public class Joueur {
         }
     }
 
+    public void ajouterCarteDansDefausse(List<Carte> cartes){
+        defausse.addAll(cartes);
+    }
+
     public ListeDeCartes getCartesEnJeu() {
         return cartesEnJeu;
     }
@@ -663,5 +678,4 @@ public class Joueur {
     public void incrementerScore() {
         score++;
     }
-
 }

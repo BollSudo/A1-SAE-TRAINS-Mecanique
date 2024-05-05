@@ -21,8 +21,6 @@ public class AtelierDeMaintenance extends CarteAction {
         }
         String nomCarteChoisie = joueur.choisir("Choisissez une carte en main de type TRAIN",
                 cartesValide, null, false);
-        if (!nomCarteChoisie.equals("")) {
-            joueur.ajouterCarteRecue(joueur.getJeu().prendreDansLaReserve(nomCarteChoisie));
-        }
+        joueur.ajouterCarteRecue(joueur.getJeu().prendreDansLaReserve(nomCarteChoisie));
     }
 }

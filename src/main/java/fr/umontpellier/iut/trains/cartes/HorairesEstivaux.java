@@ -14,14 +14,18 @@ public class HorairesEstivaux extends CarteAction {
     @Override
     public void jouer(Joueur joueur){
         super.jouer(joueur);
-        Bouton boutonOui = new Bouton("oui", "oui");
-        Bouton boutonNon = new Bouton("non", "non");
+        Bouton boutonOui = new Bouton("Oui", "oui");
+        Bouton boutonNon = new Bouton("Non", "non");
         List<Bouton> boutons = Arrays.asList(boutonOui, boutonNon);
 
-        String rep = joueur.choisir("Voulez vous défaussez la carte ?", null, boutons, true);
+        String rep = joueur.choisir("Voulez vous écarter la carte ?", null, boutons, true);
 
         if (rep.equals("oui")){
-            joueur.ecarterCarte(joueur.getCartesEnJeu().retirer("Horaires estivaux"));
+            if (EffetDuration.BUREAU_DU_CHEF_DE_GARE.getEtat()) {
+                joueur.ecarterCarte(joueur.getCartesEnJeu().retirer("Bureau du chef de gare"));
+            } else {
+                joueur.ecarterCarte(joueur.getCartesEnJeu().retirer("Horaires estivaux"));
+            }
             joueur.incrementerArgent(3);
         }
     }

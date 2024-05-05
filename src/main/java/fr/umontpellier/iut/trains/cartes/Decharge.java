@@ -9,6 +9,6 @@ public class Decharge extends CarteAction {
 
     @Override
     public void jouer(Joueur joueur){
-        joueur.removeAllFerrailleDepuisMainRecursif(1);
+        joueur.removeAllFerrailleDepuisMain();
     }
 }

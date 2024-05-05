@@ -8,11 +8,6 @@ public class TrainDeTourisme extends CarteTrainAction {
     }
 
     @Override
-    public int getPointVictoire() {
-        return 1;
-    }
-
-    @Override
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
         joueur.incrementerScore();

@@ -20,8 +20,7 @@ public class ParcDAttractions extends CarteAction {
                 cartesValide.add(carte.getNom());
             }
         }
-        String carteChoisi = joueur.choisir("Choisissez une carte Train", cartesValide, null, false);
-        int value = cartes.getCarte(carteChoisi).getValeur();
-        joueur.incrementerArgent(value);
+        String carteChoisi = joueur.choisir("Choisissez une carte TRAIN en jeu ou passez s'il n'y en a aucune", cartesValide, null, false);
+        joueur.incrementerArgent(cartes.getCarte(carteChoisi).getValeur());
     }
 }

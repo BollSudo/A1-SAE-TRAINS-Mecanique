@@ -16,10 +16,8 @@ public class Gare extends Carte {
     public void jouer(Joueur joueur) {
         List<String> choixPossibles = joueur.choixTuilesVille();
         if (joueur.getJeu().getNbJetonsGare() > 0) { // 30 jetons gares, plus de choix possibles au total que de jetons gare
-            String choix = joueur.choisir("", choixPossibles, null, false);
-            if (choix.startsWith("TUILE:")) {
-                joueur.placerJetonGare(choix);
-            }
+            String choix = joueur.choisir("Placez un jeton gare", choixPossibles, null, false);
+            joueur.placerJetonGare(choix);
         }
         joueur.recevoirUneFerraille();
     }

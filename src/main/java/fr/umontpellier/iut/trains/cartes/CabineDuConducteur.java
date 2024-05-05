@@ -14,24 +14,22 @@ public class CabineDuConducteur extends CarteAction {
     public void jouer(Joueur joueur){
         super.jouer(joueur);
         boolean fini = false;
-        Collection<String> cartesValide = new ArrayList<String>();
+        Collection<String> cartesValides = new ArrayList<>();
         for (Carte carte : joueur.getMain()) {
-            cartesValide.add(carte.getNom());
+            cartesValides.add(carte.getNom());
         }
-        int carte_defaussee = 0;
+        int cartesDefaussees = 0;
         while (!fini){
-            String nomCarteChoisis = joueur.choisir("Choisissez une carte en main de type train", cartesValide, null, true);
-            if (cartesValide.contains(nomCarteChoisis)){
-                carte_defaussee = carte_defaussee + 1;
-                cartesValide.remove(nomCarteChoisis);
-                joueur.ajouterCarteDansDefausse(joueur.getMain().getCarte(nomCarteChoisis));
-                joueur.getMain().retirer(nomCarteChoisis);
-            }else {
+            String nomCarteChoisis = joueur.choisir("Choisissez une carte en main à défausser", cartesValides,
+                    null, true);
+            if (nomCarteChoisis.equals("")) {
                 fini = true;
+            } else {
+                cartesDefaussees++;
+                cartesValides.remove(nomCarteChoisis);
+                joueur.ajouterCarteDansDefausse(joueur.getMain().retirer(nomCarteChoisis));
             }
         }
-        for (int i = 0; i< carte_defaussee; i++){
-            joueur.ajouterAlaMain(joueur.piocher());
-        }
+        joueur.ajouterAlaMain(joueur.piocher(cartesDefaussees));
     }
 }

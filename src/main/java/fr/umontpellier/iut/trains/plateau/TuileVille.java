@@ -1,5 +1,6 @@
 package fr.umontpellier.iut.trains.plateau;
 
+import fr.umontpellier.iut.trains.Joueur;
 import fr.umontpellier.iut.trains.cartes.EffetDuration;
 
 /**

@@ -2,6 +2,7 @@ package fr.umontpellier.iut.trains;
 
 import fr.umontpellier.iut.trains.cartes.*;
 import fr.umontpellier.iut.trains.plateau.Plateau;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -16,8 +17,6 @@ public class CartesEleveTest extends BaseTestClass {
     public void init() {
         setupJeu();
         initialisation();
-        jeu.setInput("");
-        joueur.jouerTour();
         setAttribute(joueur, "argent", 30);
         setAttribute(joueur, "pointsRails", 10);
     }
@@ -504,4 +503,88 @@ public class CartesEleveTest extends BaseTestClass {
         assertEquals(10, getPointsRails(joueur));
     }
 
+    //@Disabled
+    @Test
+    void test_bureau_avec_horaires_estivaux_non() {
+        Carte c = new BureauDuChefDeGare();
+        Carte he = new HorairesEstivaux();
+        Carte fondPioche = new Ferraille();
+
+        addAll(main, c, he);
+        addAll(pioche, fondPioche);
+
+        jouerTourPartiel("Bureau du chef de gare", "Horaires estivaux", "non");
+
+        assertTrue(containsReferences(main, he));
+        assertTrue(containsReferencesInOrder(pioche, fondPioche));
+        assertTrue(containsReferences(defausse));
+        assertTrue(containsReferences(cartesEnJeu, c));
+        assertTrue(containsReferences(cartesRecues));
+        assertEquals(30, getArgent(joueur));
+        assertEquals(10, getPointsRails(joueur));
+        assertTrue(containsReferences(cartesEcartees));
+    }
+
+    // @Disabled
+    @Test
+    void test_bureau_avec_horaires_estivaux_oui() {
+        Carte c = new BureauDuChefDeGare();
+        Carte he = new HorairesEstivaux();
+        Carte fondPioche = new Ferraille();
+
+        addAll(main, c, he);
+        addAll(pioche, fondPioche);
+
+        jouerTourPartiel("Bureau du chef de gare", "Horaires estivaux", "oui");
+
+        assertTrue(containsReferences(main, he));
+        assertTrue(containsReferencesInOrder(pioche, fondPioche));
+        assertTrue(containsReferences(defausse));
+        assertTrue(containsReferences(cartesEnJeu));
+        assertTrue(containsReferences(cartesRecues));
+        assertEquals(33, getArgent(joueur));
+        assertEquals(10, getPointsRails(joueur));
+        assertTrue(containsReferences(cartesEcartees, c));
+    }
+
+
+    // @Disabled
+    @Test
+    void test_calculer_score_total() {
+        Carte tourisme1 = new TrainDeTourisme();
+        Carte tourisme2 = new TrainDeTourisme();
+        Carte tourisme3 = new TrainDeTourisme();
+        Carte bureau = new BureauDuChefDeGare();
+        Carte usine = new UsineDeWagons();
+        Carte immeuble = reserve.get("Immeuble").get(0);
+        Carte gratteCiel = reserve.get("Gratte-ciel").get(0);
+        Carte appart = reserve.get("Appartement").get(0);
+        Carte express = reserve.get("Train express").get(0);
+        Carte f1 = reserve.get("Ferraille").get(0);
+        Carte f2 = reserve.get("Ferraille").get(1);
+        Carte f3 = reserve.get("Ferraille").get(2);
+
+        tuiles.get(0).ajouterRail(joueur);
+        tuiles.get(1).ajouterRail(joueur);
+        tuiles.get(8).ajouterRail(joueur);
+        tuiles.get(8).ajouterGare();
+        tuiles.get(8).ajouterGare();
+        tuiles.get(8).ajouterGare();
+
+        addAll(main, tourisme1, tourisme2, tourisme3, bureau, usine);
+
+        jouerTourPartiel("ACHAT:Immeuble", "ACHAT:Gratte-ciel", "ACHAT:Appartement", "Train de tourisme",
+                "Bureau du chef de gare", "Train de tourisme", "Usine de wagons", "Train de tourisme", "ACHAT:Train express");
+
+        assertTrue(containsReferences(main, tourisme3, express));
+        assertTrue(containsReferencesInOrder(pioche));
+        assertTrue(containsReferences(defausse));
+        assertTrue(containsReferences(cartesEnJeu, tourisme1, bureau, usine));
+        assertTrue(containsReferences(cartesRecues, immeuble, f1, gratteCiel, f2, appart, f3));
+        assertTrue(containsReferences(cartesEcartees, tourisme2));
+        assertEquals(15, getArgent(joueur));
+        assertEquals(10, getPointsRails(joueur));
+        assertEquals(9, getScore(joueur));
+        assertEquals(21, joueur.getScoreTotal());
+    }
 }

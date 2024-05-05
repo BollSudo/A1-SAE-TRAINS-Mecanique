@@ -257,7 +257,7 @@ public class JoueurEleveTest extends BaseTestClass {
         ListeDeCartes cartes = new ListeDeCartes();
         addAll(cartes, new Appartement(), new Appartement(), new Immeuble(), new GratteCiel(), new TrainDeTourisme(), new TrainDeTourisme());
         int res = joueur.calculerScoreCartes(cartes);
-        assertEquals(10, res);
+        assertEquals(8, res);
     }
 
     // @Disabled
@@ -272,4 +272,6 @@ public class JoueurEleveTest extends BaseTestClass {
 
         assertEquals(12, joueur.calculerScoreRails());
     }
+
+
 }

@@ -15,15 +15,13 @@ public class Echangeur extends CarteAction {
     public void jouer(Joueur joueur){
         super.jouer(joueur);
         ListeDeCartes cartes = joueur.getCartesEnJeu();
-
         Collection<String> cartesValide = new ArrayList<String>();
         for (Carte carte : cartes) {
             if (carte.estDeType(TypeCarte.TRAIN)){
                 cartesValide.add(carte.getNom());
             }
         }
-        String nomCarteChoisis = joueur.choisir("Choisissez une carte à récupérer", cartesValide, null, false);
-        joueur.ajouterCarteSurPioche(joueur.getCartesEnJeu().retirer(nomCarteChoisis));
-
+        String nomCarteChoisi = joueur.choisir("Choisissez une carte TRAIN de la zone de jeu ou passez", cartesValide, null, true);
+        joueur.ajouterCarteSurPioche(joueur.getCartesEnJeu().retirer(nomCarteChoisi));
     }
 }

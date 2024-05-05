@@ -16,16 +16,16 @@ public class FeuDeSignalisation extends CarteAction {
     public void jouer(Joueur joueur){
         joueur.ajouterAlaMain(joueur.piocher());
         Carte carte = joueur.piocher();
-        Bouton boutonOui = new Bouton("oui", "oui");
-        Bouton boutonNon = new Bouton("non", "non");
-        List<Bouton> boutons = Arrays.asList(boutonOui, boutonNon);
-
-        String rep = joueur.choisir("Voulez vous défaussez la carte ?", null, boutons, false);
-
-        if (rep == "oui"){
-            joueur.ajouterCarteDansDefausse(carte);
-        }else {
-            joueur.ajouterCarteSurPioche(carte);
+        if (carte != null) {
+            Bouton boutonOui = new Bouton("Oui", "oui");
+            Bouton boutonNon = new Bouton("Non", "non");
+            List<Bouton> boutons = Arrays.asList(boutonOui, boutonNon);
+            String rep = joueur.choisir("Voulez vous défausser la carte "+carte.getNom()+" ?", null, boutons, false);
+            if (rep.equals("oui")){
+                joueur.ajouterCarteDansDefausse(carte);
+            }else {
+                joueur.ajouterCarteSurPioche(carte);
+            }
         }
     }
 }

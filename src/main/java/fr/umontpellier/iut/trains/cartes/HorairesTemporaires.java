@@ -9,17 +9,18 @@ public class HorairesTemporaires extends CarteAction {
 
     @Override
     public void jouer(Joueur joueur){
-        int train = 0;
+        ListeDeCartes autresCartesDevoilees = new ListeDeCartes();
+        ListeDeCartes trainsDevoiles = new ListeDeCartes();
         Carte carte;
-        while (train < 2){
-            carte = joueur.piocher();
+        while (trainsDevoiles.size()<2 && ((carte = joueur.piocher()) != null)) {
             if (carte.estDeType(TypeCarte.TRAIN)){
-                train = train + 1;
-                joueur.ajouterAlaMain(carte);
+                trainsDevoiles.add(carte);
             }
             else {
-                joueur.ajouterCarteDansDefausse(carte);
+                autresCartesDevoilees.add(carte);
             }
         }
+        joueur.ajouterAlaMain(trainsDevoiles);
+        joueur.ajouterCarteDansDefausse(autresCartesDevoilees);
     }
 }

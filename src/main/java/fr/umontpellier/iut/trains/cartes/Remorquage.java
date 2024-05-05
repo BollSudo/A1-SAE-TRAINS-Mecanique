@@ -1,9 +1,11 @@
 package fr.umontpellier.iut.trains.cartes;
 
+import fr.umontpellier.iut.trains.Bouton;
 import fr.umontpellier.iut.trains.Joueur;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class Remorquage extends CarteAction {
     public Remorquage() {
@@ -13,14 +15,13 @@ public class Remorquage extends CarteAction {
     @Override
     public void jouer(Joueur joueur){
         ListeDeCartes cartes = joueur.getDefausse();
-        Collection<String> cartesValide = new ArrayList<>();
+        List<Bouton> cartesValide = new ArrayList<>();
         for (Carte carte : cartes){
             if (carte.estDeType(TypeCarte.TRAIN)){
-                cartesValide.add(carte.getNom());
+                cartesValide.add(new Bouton(carte.getNom(), carte.getNom()));
             }
         }
-        String nomCarteChoisis = joueur.choisir("Choisissez une carte train à récupérer", cartesValide, null, false);
-        Carte c = joueur.getDefausse().retirer(nomCarteChoisis);
-        joueur.ajouterAlaMain(c);
+        String nomCarteChoisis = joueur.choisir("Choisissez une carte TRAIN à récupérer", null, cartesValide, false);
+        joueur.ajouterAlaMain(joueur.getDefausse().retirer(nomCarteChoisis));
     }
 }
