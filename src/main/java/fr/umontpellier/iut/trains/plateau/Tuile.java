@@ -1,12 +1,9 @@
 package fr.umontpellier.iut.trains.plateau;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import fr.umontpellier.iut.trains.Joueur;
+import fr.umontpellier.iut.trains.cartes.EffetDuration;
 
 public abstract class Tuile {
     /**
@@ -102,5 +99,50 @@ public abstract class Tuile {
             map.put("nbGares", nbGares);
         }
         return map;
+    }
+
+    // FONCTIONS AJOUTEES
+    //**************************************************************************************/
+    /*                             A NETOYER AVANT DE RENDRE                              */
+    //**************************************************************************************/
+
+    public ArrayList<Tuile> getVoisines() {
+        return voisines;
+    }
+
+    /**
+     * Calcul le nombre de points que rapporte la tuile si un joueur possède un jeton rail dessus.
+     * @return 0 par défault, car pas toutes les tuiles rapportent des points.
+     */
+    public int getPoint() {
+        return 0;
+    }
+
+    /**
+     * Pose une gare sur la tuile, par défault ne fait rien, car on ne peut pas
+     * poser une gare sur une tuile quelconque.
+     */
+    public void ajouterGare() {
+    }
+
+    /**
+     * Vérifie si l'on peut construire une gare sur la tuile. Cette méthode est indépendante du joueur.
+     * @return false par défault car seul la TuileVille peut avoir des gares.
+     */
+    public boolean peutAvoirGare() {
+        return false;
+    }
+
+    /**
+     * Vérifie si l'on peut construire un rail sur la tuile. Cette méthode est indépendante du joueur.
+     * @return true par défault car seul la TuileMer ne peut pas avoir de rail.
+     */
+    public boolean peutAvoirRail() {
+        return true;
+    }
+
+    public int getSurcout() {
+        return EffetDuration.ANNULER_SURCOUT_RAILS.getEtat() ? 0 : rails.size();
+        //le surcout doit etre calculer avant la pose de rail du joueur sinon rails.size() fausse
     }
 }

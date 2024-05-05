@@ -1,15 +1,9 @@
 package fr.umontpellier.iut.trains;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 
-import fr.umontpellier.iut.trains.cartes.Carte;
-import fr.umontpellier.iut.trains.cartes.FabriqueListeDeCartes;
-import fr.umontpellier.iut.trains.cartes.ListeDeCartes;
+import fr.umontpellier.iut.trains.cartes.*;
+import fr.umontpellier.iut.trains.plateau.*;
 
 public class Joueur {
     /**
@@ -26,7 +20,7 @@ public class Joueur {
     private int argent;
     /**
      * Nombre de points rails dont le joueur dispose. Ces points sont obtenus en
-     * jouant les cartes RAIL (vertes) et remis à zéro entre les tous
+     * jouant les cartes RAIL (vertes) et remis à zéro entre les tours
      */
     private int pointsRails;
     /**
@@ -58,7 +52,8 @@ public class Joueur {
      * Couleur du joueur (utilisé par l'interface graphique)
      */
     private CouleurJoueur couleur;
-
+    //ATTRIBUT AJOUTE (score actuel du joueur provenant des cartes)
+    private int score = 0;
     public Joueur(Jeu jeu, String nom, CouleurJoueur couleur) {
         this.jeu = jeu;
         this.nom = nom;
@@ -114,8 +109,7 @@ public class Joueur {
      * @return le score total du joueur
      */
     public int getScoreTotal() {
-        // À FAIRE
-        return 0;
+        return score + calculerScoreRails();
     }
 
     /**
@@ -127,8 +121,18 @@ public class Joueur {
      * @return la carte piochée ou {@code null} si aucune carte disponible
      */
     public Carte piocher() {
-        // À FAIRE
-        return null;
+        // À FAIRE - DONE
+        if (pioche.isEmpty() && defausse.isEmpty()) {
+            return null;
+        }
+        if (pioche.isEmpty()) {
+            defausse.melanger();
+            pioche.addAll(defausse);
+            defausse.clear();
+        }
+        Carte cartePiochee = pioche.get(0);
+        pioche.remove(0);
+        return cartePiochee;
     }
 
     /**
@@ -145,8 +149,17 @@ public class Joueur {
      *         défausse)
      */
     public List<Carte> piocher(int n) {
-        // À FAIRE
-        return null;
+        // À FAIRE - DONE
+        List<Carte> cartesPiochees = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            Carte cartePiochee = piocher();
+            if (cartePiochee==null){
+                break;
+            }
+            cartesPiochees.add(cartePiochee);
+        }
+
+        return cartesPiochees;
     }
 
     /**
@@ -185,22 +198,159 @@ public class Joueur {
     public void jouerTour() {
         // Initialisation
         jeu.log("<div class=\"tour\">Tour de " + toLog() + "</div>");
-        // À FAIRE: compléter l'initialisation du tour si nécessaire (mais possiblement
+        // À FAIRE - DONE : compléter l'initialisation du tour si nécessaire (mais possiblement
         // rien de spécial à faire)
 
+        EffetDuration.resetAll();
         boolean finTour = false;
+        boolean premiereAction = true;
+        List<Tuile> tuilesRails = getTuilesRails();
         // Boucle principale
         while (!finTour) {
             List<String> choixPossibles = new ArrayList<>();
-            // À FAIRE: préparer la liste des choix possibles
+
+            // À FAIRE - DONE: préparer la liste des choix possibles
+            for (Carte c: main) {
+                // ajoute les noms de toutes les cartes en main à choixPossibles
+                if (!c.getNom().equals("Ferraille") && !c.estDeType(TypeCarte.VICTOIRE)) {
+                    choixPossibles.add(c.getNom());
+                }
+            }
+            for (String nomCarte: jeu.getReserve().keySet()) {
+                // ajoute les noms des cartes dans la réserve préfixés de "ACHAT:" à choixPossibles
+                // A FAIRE : verifier que la pile n'est pas vide et que le joueur peut l'acheter
+                if (!(nomCarte.equals("Ferraille")) && (!jeu.getReserve().get(nomCarte).isEmpty()) && (jeu.getReserve().get(nomCarte).get(0).getCout() <= argent)) {
+                    choixPossibles.add("ACHAT:" + nomCarte);
+                }
+            }
+            if (premiereAction) {
+                choixPossibles.add("Ferraille"); // action spéciale possible si passe son tour
+            }
+            if (pointsRails > 0 && nbJetonsRails > 0) {
+                // Filtrer toutes les tuiles voisines jouables du joueur
+                for (Tuile tuileRails : tuilesRails) {
+                    for (Tuile voisine : tuileRails.getVoisines()) {
+                        if (voisine.peutAvoirRail() && !voisine.hasRail(this)) {
+                            //verfier que voisine n'est pas une tuile mer
+                            // verifier si assez d'argent pour pose de rail - A FAIRE
+                            if ((EffetDuration.ANNULER_SURCOUT_ALL.getEtat() ? 0 : voisine.getSurcout()) <= argent) {
+                                choixPossibles.add("TUILE:"+jeu.getTuiles().indexOf(voisine));
+                            }
+                        }
+                    }
+                }
+            }
 
             // Choix de l'action à réaliser
             String choix = choisir(String.format("Tour de %s", this.nom), choixPossibles, null, true);
 
             // À FAIRE: exécuter l'action demandée par le joueur
+
+            //CAS 1 : ACHETER
+                // - Acheter des cartes de la réserve (no order and no limit)
+                        // Rq : il faut filtrer les cartes qui sont achetables - A FAIRE
+
+                //  Attention : chaque action se fait successivement (pas deux en meme temps)
+                // rq : pas obligé de dépenser tout l'argent généré, ni de jouer toutes ses cartes
+
+            //CAS 2 : TERMINER LE TOUR ("")
+                // - Rien faire
+
+            //CAS 3 : PASSER SON TOUR + ("SPECIAL") - Valable que si n'a pas fait d'autres actions avant
+                // - Action spéciale : remettre toutes Ferrailles de sa main dans pile Ferraille de reserve
+
+            //CAS 4 : POSER UN RAIL ("TUILE")
+
+            //CAS 5 : JOUER
+                // - Jouer des cartes de sa main (no order and no limit)
+                // Rq : certaines cartes ne sont pas jouables - A FAIRE
+                // si Pose de Rails alors doit placer un jeton rail sur le plateau en respectant les règles
+
+            //CAS 1
+            if (choix.startsWith("ACHAT:")) {
+                // prendre une carte dans la réserve
+                String nomCarte = choix.split(":")[1];
+                Carte carte = jeu.prendreDansLaReserve(nomCarte);
+                if (carte != null) {
+                    log("Reçoit " + carte); // affichage dans le log
+                    if (EffetDuration.PLACER_ACHAT_SUR_DECK.getEtat()) { //effet train matinal
+                        List<Bouton> choixBoutons = new ArrayList<>();
+                        choixBoutons.add(new Bouton("Oui", "oui"));
+                        choixBoutons.add(new Bouton("Non", "non"));
+                        String choixBouton = choisir("Voulez-vous placer cette carte "+nomCarte+
+                                " directement au dessus de votre deck", null, choixBoutons, false);
+                        if (choixBouton.equals("oui")) {
+                            pioche.add(0, carte);
+                        }
+                        else {
+                            cartesRecues.add(carte);
+                        }
+                    } else {
+                        cartesRecues.add(carte);
+                    }
+                    decrementerArgent(carte.getCout());
+                    if (carte.estDeType(TypeCarte.VICTOIRE)) {
+                        recevoirUneFerraille();
+                        score += carte.getPointVictoire();
+                    }
+                }
+            }
+
+            //CAS 2
+            else if (choix.equals("")) {
+                // terminer le tour
+                finTour = true;
+            }
+
+            //CAS 3
+            else if (choix.equals("Ferraille")) {
+                // passe son tour avec action spéciale - A FAIRE - DONE
+                int nbFerraillesDeplacees = removeAllFerrailleDepuisMain();
+                log("Réalise l'action spéciale : "+nbFerraillesDeplacees+" Ferraille déposé(s) dans la réserve");
+                finTour = true;
+            }
+
+            //CAS 4
+
+            else if (choix.startsWith("TUILE:")) {
+                Tuile tuileChoisie = jeu.getTuile(placerJetonRail(choix, false));
+                tuilesRails.add(tuileChoisie);
+            }
+
+            //CAS 5
+            else {
+                // jouer une carte de la main
+                Carte carte = main.retirer(choix);
+                log("Joue " + carte); // affichage dans le log
+                cartesEnJeu.add(carte); // mettre la carte en jeu
+                carte.jouer(this);  // exécuter l'action de la carte
+
+                if (EffetDuration.FERRONNERIE.getEtat() && carte.estDeType(TypeCarte.RAIL)) {
+                    incrementerArgent(2 * EffetDuration.FERRONNERIE.getStacks());
+                }
+            }
+
+            //fin de la premiere action
+            premiereAction = false;
         }
+
+
         // Finalisation
-        // À FAIRE: compléter la finalisation du tour
+        // À FAIRE: compléter la finalisation du tour (phase d'ajustement)
+
+        // défausser toutes les cartes
+        defausse.addAll(main);
+        main.clear();
+        defausse.addAll(cartesRecues);
+        cartesRecues.clear();
+        defausse.addAll(cartesEnJeu);
+        cartesEnJeu.clear();
+
+        //main.addAll(piocher(5)); // piocher 5 cartes en main
+        ajouterAlaMain(piocher(5));
+        //reset
+        argent = 0;
+        pointsRails = 0;
     }
 
     /**
@@ -336,5 +486,193 @@ public class Joueur {
                 Map.entry("cartesRecues", cartesRecues.dataMap()),
                 Map.entry("pioche", pioche.dataMap()),
                 Map.entry("actif", jeu.getJoueurCourant() == this));
+    }
+
+    // FONCTIONS AJOUTEES
+    //**************************************************************************************/
+    /*                             A NETOYER AVANT DE RENDRE                              */
+    //**************************************************************************************/
+
+
+    /**
+     * Action : retire toutes les cartes férrailles de la main du joueur et les placent dans la pile Ferraille de la réserve.
+     * @return le nombre de cartes Ferraille mis en réserve.
+     */
+    public int removeAllFerrailleDepuisMain() {
+        int count = main.count("Ferraille");
+        for (int i = 0; i < count ; i++) {
+            removeUneFerrailleDepuisMain();
+        }
+        return count;
+    }
+
+    public void removeUneFerrailleDepuisMain() {
+        Carte f;
+        if ((f = main.retirer("Ferraille")) != null) {
+            jeu.getReserve().get("Ferraille").add(f);
+        }
+    }
+
+    /**
+     * Action (récursif) : retire toutes les cartes férrailles de la main du joueur et les placent dans la pile Ferraille de la réserve.
+     */
+    public void removeAllFerrailleDepuisMainRecursif(int value){
+        if (value > 0) {
+            Carte ferraille = main.getCarte("Ferraille");
+            if (ferraille != null){
+                ferraille = main.retirer("Ferraille");
+                jeu.getReserve().get("Ferraille").add(ferraille);
+                removeAllFerrailleDepuisMainRecursif(1);
+            }
+        }
+    }
+
+    /**
+     * Action : le joueur place un jeton rail sur la tuile choisie entrée en paramètre sous la forme d'une chaine de
+     * caractères, et envoie un message d'information.
+     * Pré-requis : la chaîne de caractère est de la forme : "TUILE:"+index de la tuile sur le plateau
+     * @return l'index de la tuile choisie
+     */
+    public int placerJetonRail(String choix, boolean debutTour) {
+        int indexTuile = Integer.parseInt(choix.split(":")[1]);
+        Tuile tuileChoisie = jeu.getTuile(indexTuile);
+        if (!debutTour) {
+            decrementerArgent((EffetDuration.ANNULER_SURCOUT_ALL.getEtat() ? 0 : tuileChoisie.getSurcout()));
+            pointsRails--;
+            if (!tuileChoisie.estVide() && !EffetDuration.ANNULER_SURCOUT_RAILS.getEtat()) {
+                recevoirUneFerraille();
+            }
+        }
+        tuileChoisie.ajouterRail(this);
+        nbJetonsRails--;
+        log("A placé un jeton Rails à "+ Plateau.getCoordonnees(indexTuile));
+        return indexTuile;
+    }
+
+    public void placerJetonGare(String choix) {
+        int indexTuile = Integer.parseInt(choix.split(":")[1]);
+        jeu.getTuile(indexTuile).ajouterGare();
+        jeu.decrementerNbJetonsGare();
+        log("A placé un jeton Gare à "+ Plateau.getCoordonnees(indexTuile));
+    }
+
+    public int getNbJetonsRails() {
+        return nbJetonsRails;
+    }
+
+    public void incrementerPointsRails() {
+        pointsRails++;
+    }
+
+    /**
+     * Le joueur reçoit une carte Ferraille issue de la pile Ferraille de la reserve.
+     * Ne fait rien si la pile Ferraille est vide.
+     */
+    public void recevoirUneFerraille() {
+        if (!jeu.getReserve().get("Ferraille").isEmpty() && !EffetDuration.DEPOTOIR.getEtat()) {
+            cartesRecues.add(jeu.prendreDansLaReserve("Ferraille"));
+        }
+    }
+
+    /**
+     * Calcul le score du joueur issu des cartes VICTOIRE (et Train de tourisme cas particulier) provenant de la liste
+     * de cartes entrée en paramètre.
+     */
+    public int calculerScoreCartes(ListeDeCartes cartes) {
+        int score = 0;
+        for (Carte carte : cartes) {
+            score += carte.getPointVictoire();
+        }
+        return score;
+    }
+
+    public int calculerScoreRails() {
+        int score = 0;
+        for (Tuile tuile : jeu.getTuiles()) {
+            if (tuile.hasRail(this)) {
+                score += tuile.getPoint();
+            }
+        }
+        return score;
+    }
+
+    public List<Tuile> getTuilesRails() {
+        List<Tuile> tuilesRails = new ArrayList<>();
+        for (Tuile tuile : jeu.getTuiles()) {
+            if (tuile.hasRail(this)) {
+                tuilesRails.add(tuile);
+            }
+        }
+        return tuilesRails;
+    }
+
+    public List<String> choixTuilesVille() {
+        List<String> choix = new ArrayList<>();
+        for (Tuile tuile : jeu.getTuiles()) {
+            if (tuile.peutAvoirGare()) {
+                choix.add("TUILE:"+jeu.getTuiles().indexOf(tuile));
+            }
+        }
+        return choix;
+    }
+
+    public void ajouterAlaMain(List<Carte> cartes) {
+        main.addAll(cartes);
+    }
+    public void ajouterAlaMain(Carte carte) {
+        if (carte != null) {
+            main.add(carte);
+        }
+    }
+    public void incrementerArgent(int valeur) {
+        argent+=valeur;
+    }
+    public void decrementerArgent(int cout) {
+        argent-=cout;
+    }
+    public ListeDeCartes getMain() {
+        return main;
+    }
+    public Jeu getJeu() {
+        return jeu;
+    }
+    public void ajouterCarteSurPioche(Carte carte){
+        if (carte != null) {
+            pioche.add(0, carte);
+        }
+    }
+    public void ajouterCarteDansDefausse(Carte carte){
+        if (carte != null) {
+            defausse.add(carte);
+        }
+    }
+
+    public void ajouterCarteDansDefausse(List<Carte> cartes){
+        defausse.addAll(cartes);
+    }
+
+    public ListeDeCartes getCartesEnJeu() {
+        return cartesEnJeu;
+    }
+
+    public void ajouterCarteRecue(Carte carte){
+        if (carte != null) {
+            cartesRecues.add(carte);
+        }
+    }
+
+    public ListeDeCartes getDefausse(){
+        return defausse;
+    }
+
+    public void ecarterCarte(Carte carte){
+        if (carte != null) {
+            getJeu().getCartesEcartees().add(carte);
+            score -= carte.getPointVictoire();
+        }
+    }
+
+    public void incrementerScore() {
+        score++;
     }
 }

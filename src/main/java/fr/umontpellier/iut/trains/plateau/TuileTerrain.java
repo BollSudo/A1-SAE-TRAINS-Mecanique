@@ -1,5 +1,7 @@
 package fr.umontpellier.iut.trains.plateau;
 
+import fr.umontpellier.iut.trains.cartes.EffetDuration;
+
 /**
  * Classe représentant une tuile plaine, fleuve ou montagne.
  */
@@ -13,4 +15,17 @@ public class TuileTerrain extends Tuile {
         super();
         this.type = type;
     }
+
+    @Override
+    public int getSurcout() {
+        int surcoutBase;
+        if (type==TypeTerrain.FLEUVE && !EffetDuration.ANNULER_SURCOUT_RIVIERE.getEtat()) {
+            surcoutBase = 1;
+        } else if (type==TypeTerrain.MONTAGNE && !EffetDuration.ANNULER_SURCOUT_MONTAGNE.getEtat()) {
+            surcoutBase = 2;
+        } else
+            surcoutBase = 0;
+        return super.getSurcout() + surcoutBase;
+    }
+
 }

@@ -8,4 +8,9 @@ public class TuileMer extends Tuile {
     public TuileMer() {
         super();
     }
+
+    @Override
+    public boolean peutAvoirRail() {
+        return false;
+    }
 }

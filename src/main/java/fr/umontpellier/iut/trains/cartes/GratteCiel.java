@@ -1,7 +1,7 @@
 package fr.umontpellier.iut.trains.cartes;
 
-public class GratteCiel extends Carte {
+public class GratteCiel extends CarteVictoire {
     public GratteCiel() {
-        super("Gratte-Ciel");
+        super("Gratte-ciel", 8, 0, 4);
     }
 }

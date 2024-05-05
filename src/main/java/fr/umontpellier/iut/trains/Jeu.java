@@ -191,7 +191,8 @@ public class Jeu implements Runnable {
      */
     public void run() {
         // initialisation (chaque joueur choisit une position de départ)
-        // À FAIRE: compléter la partie initialisation
+        // À FAIRE - DONE : compléter la partie initialisation
+        initPartie();
 
         // tours des joueurs jusqu'à une condition de fin
         while (!estFini()) {
@@ -212,6 +213,25 @@ public class Jeu implements Runnable {
      */
     public boolean estFini() {
         // À FAIRE: réécrire cette méthode
+        //FIN DE PARTIE
+
+        //Un des joueurs à utiliser tous ses jetons rails
+        //Tous les jetons gares placés sur plateau
+        if (joueurCourant.getNbJetonsRails() == 0 || nbJetonsGare == 0) {
+            return true;
+        }
+
+        //4 piles de cartes de la réserve vide sauf ferrailles
+        int nbPileVide = 0;
+        for (Map.Entry<String, ListeDeCartes> entry : reserve.entrySet()) {
+            if ((!(entry.getKey().equals("Ferraille"))) && (entry.getValue().isEmpty())) {
+                nbPileVide++;
+            }
+            if (nbPileVide >= 4) {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -309,5 +329,48 @@ public class Jeu implements Runnable {
                 Map.entry("tuiles", tuiles.stream().map(Tuile::dataMap).toList()),
                 Map.entry("log", log),
                 Map.entry("reserve", listeReserve));
+    }
+
+
+
+    // FONCTIONS AJOUTEES
+    //**************************************************************************************/
+    /*                             A NETOYER AVANT DE RENDRE                              */
+    //**************************************************************************************/
+
+    /**
+     * Initialisation de la partie : place un jeton Rails sur une tuile possible pour l'initialisation du jeu (c-à-d pas de TuileMer ni
+     * TuileEtoile ni Tuile deja choisi par un autre Joueur.
+     */
+    public void initPartie() {
+        List<String> choixPossibles = new ArrayList<>();
+        // Filtrer les tuiles possibles de départ
+        for (Tuile tuile : tuiles) {
+            if (tuile.peutAvoirRail() && tuile.getPoint()==0) { //vérifie si ce n'est pas une tuile mer ou une tuile etoile
+                choixPossibles.add("TUILE:"+tuiles.indexOf(tuile));
+            }
+        }
+        for (Joueur joueur : joueurs) {
+            log("<div class=\"tour\">Départ de " + joueur.toLog() + "</div>");
+            // Choix de l'action à réaliser (no skip)
+            String choix = joueur.choisir(String.format("Tour de %s", joueur.getNom()), choixPossibles, null, false);
+            // Retirer le choix de ce joueur parmi les choix possibles restants
+            choixPossibles.remove(choix);
+            // Placer jeton Rails sur la tuile choisie par le joueur
+            joueur.placerJetonRail(choix, true);
+            passeAuJoueurSuivant();
+        }
+    }
+
+    public void decrementerNbJetonsGare() {
+        nbJetonsGare--;
+    }
+
+    public int getNbJetonsGare() {
+        return nbJetonsGare;
+    }
+
+    public ListeDeCartes getCartesEcartees() {
+        return cartesEcartees;
     }
 }
