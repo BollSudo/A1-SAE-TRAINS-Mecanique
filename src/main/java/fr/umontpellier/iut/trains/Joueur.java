@@ -531,7 +531,6 @@ public class Joueur {
      * Action : le joueur place un jeton rail sur la tuile choisie entrée en paramètre sous la forme d'une chaine de
      * caractères, et envoie un message d'information.
      * Pré-requis : la chaîne de caractère est de la forme : "TUILE:"+index de la tuile sur le plateau
-     * @param choix
      * @return l'index de la tuile choisie
      */
     public int placerJetonRail(String choix, boolean debutTour) {
@@ -578,8 +577,6 @@ public class Joueur {
     /**
      * Calcul le score du joueur issu des cartes VICTOIRE (et Train de tourisme cas particulier) provenant de la liste
      * de cartes entrée en paramètre.
-     * @param cartes
-     * @return
      */
     public int calculerScoreCartes(ListeDeCartes cartes) {
         int score = 0;

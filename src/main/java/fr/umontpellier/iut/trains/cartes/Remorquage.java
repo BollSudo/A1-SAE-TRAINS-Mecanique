@@ -4,7 +4,6 @@ import fr.umontpellier.iut.trains.Bouton;
 import fr.umontpellier.iut.trains.Joueur;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class Remorquage extends CarteAction {

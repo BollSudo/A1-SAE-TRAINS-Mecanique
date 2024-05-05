@@ -14,7 +14,7 @@ public class Depot extends CarteAction {
     public void jouer(Joueur joueur){
         super.jouer(joueur);
         joueur.ajouterAlaMain(joueur.piocher(2));
-        Collection<String> cartesValide = new ArrayList<String>();
+        Collection<String> cartesValide = new ArrayList<>();
         for (Carte carte : joueur.getMain()){
             cartesValide.add(carte.getNom());
         }

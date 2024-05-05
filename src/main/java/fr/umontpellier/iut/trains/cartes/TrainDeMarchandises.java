@@ -22,7 +22,7 @@ public class TrainDeMarchandises extends CarteTrainAction {
         String choix = joueur.choisir("Sélectionnez les cartes Ferraille que vous souhaitez mettre en réserve : ",
                 choixPossibles, null, true);
         while (!choix.equals("")) {
-            joueur.getJeu().getReserve().get("Ferraille").add(joueur.getMain().retirer("Ferraille"));;
+            joueur.getJeu().getReserve().get("Ferraille").add(joueur.getMain().retirer("Ferraille"));
             joueur.incrementerArgent(1);
             choix = joueur.choisir("Sélectionnez les cartes Ferraille que vous souhaitez mettre en réserve : ",
                     choixPossibles, null, true);

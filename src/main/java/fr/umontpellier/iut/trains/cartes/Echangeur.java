@@ -4,7 +4,6 @@ import fr.umontpellier.iut.trains.Joueur;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
 
 public class Echangeur extends CarteAction {
     public Echangeur() {
@@ -15,7 +14,7 @@ public class Echangeur extends CarteAction {
     public void jouer(Joueur joueur){
         super.jouer(joueur);
         ListeDeCartes cartes = joueur.getCartesEnJeu();
-        Collection<String> cartesValide = new ArrayList<String>();
+        Collection<String> cartesValide = new ArrayList<>();
         for (Carte carte : cartes) {
             if (carte.estDeType(TypeCarte.TRAIN)){
                 cartesValide.add(carte.getNom());

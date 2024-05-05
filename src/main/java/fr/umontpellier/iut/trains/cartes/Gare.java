@@ -1,10 +1,6 @@
 package fr.umontpellier.iut.trains.cartes;
 
 import fr.umontpellier.iut.trains.Joueur;
-import fr.umontpellier.iut.trains.plateau.Plateau;
-import fr.umontpellier.iut.trains.plateau.Tuile;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class Gare extends Carte {

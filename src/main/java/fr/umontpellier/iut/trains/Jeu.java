@@ -16,8 +16,6 @@ import fr.umontpellier.iut.trains.cartes.FabriqueListeDeCartes;
 import fr.umontpellier.iut.trains.cartes.ListeDeCartes;
 import fr.umontpellier.iut.trains.plateau.Plateau;
 import fr.umontpellier.iut.trains.plateau.Tuile;
-import fr.umontpellier.iut.trains.plateau.TuileEtoile;
-import fr.umontpellier.iut.trains.plateau.TuileMer;
 
 public class Jeu implements Runnable {
     /**

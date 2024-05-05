@@ -2,8 +2,6 @@ package fr.umontpellier.iut.trains.cartes;
 
 import fr.umontpellier.iut.trains.Joueur;
 
-import java.util.Set;
-
 public abstract class Carte {
     private final String nom;
     private final int cout;
